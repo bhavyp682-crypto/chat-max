@@ -1,0 +1,580 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Chat Max</title>
+<meta name="description" content="Chat Max by WE CODE: AI chat, smart agents, image generation and shared knowledge.">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Chat Max">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon.ico" sizes="any">
+<link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{--bg:#000;--cd:#171717;--tx:#f2f2f2;--mu:#8d8d8d;--bd:#2c2c2c;--ac:#10a37f}
+:root[data-t=light]{--bg:#fff;--cd:#f0f0f0;--tx:#111;--mu:#767676;--bd:#e2e2e2}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;background:var(--bg);color:var(--tx);font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+svg{display:block}
+#sp{position:fixed;inset:0;background:#000;z-index:99;display:flex;align-items:center;justify-content:center;transition:opacity .5s,visibility .5s}
+#sp.h{opacity:0;visibility:hidden}
+.lg{width:64px;height:64px;opacity:0;transform:translateY(-240px);animation:dr .9s cubic-bezier(.34,1.56,.64,1) 2s forwards}
+@keyframes dr{0%{opacity:0;transform:translateY(-240px)}55%{opacity:1;transform:translateY(16px)}75%{transform:translateY(-6px)}100%{opacity:1;transform:none}}
+.wd{overflow:hidden;max-width:0;opacity:0;white-space:nowrap;font-size:26px;font-weight:800;color:#f5f5f5;animation:wi .8s ease 4.4s forwards}
+.wd b{color:var(--ac)}
+@keyframes wi{to{max-width:220px;opacity:1;margin-left:12px}}
+#app{height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+header{display:flex;align-items:center;gap:6px;padding:10px 12px}
+header button{padding:8px;border-radius:50%}
+#ttl{flex:1;font-weight:700;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#msgs{flex:1;overflow:auto;padding:8px 16px;display:flex;flex-direction:column;gap:18px}
+.em{margin:auto;text-align:center;color:var(--mu)}.em svg{margin:0 auto 12px}
+.u{align-self:flex-end;max-width:85%;background:var(--cd);padding:10px 14px;border-radius:18px;white-space:pre-wrap;word-break:break-word}
+.u i{color:var(--mu);font-size:13px}
+.a .tx{white-space:pre-wrap;word-break:break-word;margin-top:6px}
+.a .ac{display:flex;gap:4px;margin-top:6px;color:var(--mu)}.ac button{padding:6px}
+.st{color:var(--mu);font-size:14px;margin-top:6px}
+.sb{margin-top:6px;border:1px solid var(--bd);border-radius:14px;padding:4px 12px;font-size:13px}
+.cc{background:var(--cd);border-radius:12px;padding:10px;margin:8px 0;position:relative;white-space:normal}
+.cc pre{white-space:pre-wrap;font:13px/1.5 ui-monospace,Menlo,monospace;margin-top:18px}
+.cc button{position:absolute;right:8px;top:6px;font-size:12px;color:var(--ac)}
+#chip{padding:0 16px}
+.ch{display:inline-flex;gap:8px;background:var(--cd);border-radius:12px;padding:6px 10px;font-size:13px;margin-bottom:6px}
+.bar{display:flex;align-items:flex-end;gap:6px;margin:6px 12px calc(10px + env(safe-area-inset-bottom));background:var(--cd);border-radius:26px;padding:6px}
+.bar button{padding:9px;border-radius:50%}
+#inp{flex:1;background:none;border:0;color:var(--tx);font:inherit;resize:none;max-height:120px;padding:9px 4px;outline:0}
+#act{background:var(--ac);color:#fff}
+.sh{position:fixed;left:12px;bottom:80px;background:var(--cd);border:1px solid var(--bd);border-radius:18px;padding:6px;display:none;z-index:20}
+.sh.on{display:block}.sh button{display:flex;gap:12px;align-items:center;padding:12px 16px;width:100%;text-align:left}
+#mn{left:auto;right:12px;top:54px;bottom:auto}
+#sc{position:fixed;inset:0;background:#0008;display:none;z-index:30}#sc.on{display:block}
+#dr{position:fixed;top:0;bottom:0;left:0;width:82%;max-width:340px;background:var(--bg);border-right:1px solid var(--bd);z-index:31;transform:translateX(-100%);transition:transform .25s;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+#dr.on{transform:none}
+.dh{display:flex;align-items:center;justify-content:space-between;padding:14px}
+.dh b{font-size:20px}.dh b span,.ac2{color:var(--ac)}
+.nb{border:1px solid var(--bd);border-radius:12px;padding:6px 12px}
+#sq{margin:0 14px 8px;background:var(--cd);border:0;border-radius:12px;padding:10px;color:var(--tx);font:inherit;outline:0}
+#cl{flex:1;overflow:auto}
+.ci{padding:12px 16px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}.ci.on{background:var(--cd)}
+.df{border-top:1px solid var(--bd)}.df button{display:block;width:100%;text-align:left;padding:13px 16px}
+#pg{position:fixed;inset:0;background:var(--bg);z-index:40;display:none;flex-direction:column;padding-top:env(safe-area-inset-top)}#pg.on{display:flex}
+#pgb{flex:1;overflow:auto;padding:4px 16px 20px}
+.row{display:flex;align-items:center;justify-content:space-between;padding:14px 4px;border-bottom:1px solid var(--bd);cursor:pointer}
+.mu{color:var(--mu);font-size:14px}
+.in{width:100%;background:var(--cd);border:1px solid var(--bd);border-radius:12px;padding:11px;color:var(--tx);font:inherit;margin:6px 0 12px;outline:0}
+.pb{background:var(--tx);color:var(--bg);border-radius:24px;padding:11px 20px;font-weight:600;margin:6px 6px 0 0}.pb.g{background:var(--cd);color:var(--tx)}
+.card{background:var(--cd);border-radius:16px;padding:16px;margin:12px 0}
+.r{display:flex;justify-content:space-between}.r.s{font-size:13px;color:var(--mu);margin-top:6px}
+.tr{height:8px;background:var(--bd);border-radius:6px;overflow:hidden;margin-top:8px}.tr i{display:block;height:100%;border-radius:6px}
+.ub{margin-bottom:18px}
+.seg{display:flex;background:var(--cd);border-radius:20px;padding:3px;margin:8px 0}.seg button{flex:1;padding:8px;border-radius:18px}.seg .on{background:var(--tx);color:var(--bg)}
+#ts{position:fixed;left:50%;bottom:90px;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:10px 16px;border-radius:20px;font-size:14px;z-index:60;opacity:0;pointer-events:none;transition:opacity .2s;max-width:90%;text-align:center}#ts.on{opacity:1}
+#md{position:fixed;inset:0;background:#000a;z-index:70;display:none;align-items:center;justify-content:center;padding:20px}#md.on{display:flex}
+.mb{background:var(--bg);border:1px solid var(--bd);border-radius:20px;padding:20px;width:100%;max-width:340px;max-height:88%;overflow:auto}.mb h3{margin-bottom:10px}.mb label{font-size:13px;color:var(--mu)}
+.cp{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}.cp button{border:1px solid var(--bd);border-radius:16px;padding:6px 12px}.cp .on{background:var(--tx);color:var(--bg)}
+.gr{font-size:22px;font-weight:700;margin-bottom:14px;color:var(--tx)}.sg{display:block;width:100%;text-align:left;border:1px solid var(--bd);border-radius:14px;padding:12px 14px;margin-top:8px;color:var(--mu)}
+header button{padding:10px;border-radius:12px;background:var(--cd)}#ttl{font-size:18px}
+.em{margin:auto 0 24px;text-align:left;width:100%}.em svg{margin:0 0 26px}.gr2{font-size:20px}.hd{font-size:32px;font-weight:800;line-height:1.15;margin:2px 0 18px;color:var(--tx)}
+.sg{display:flex;align-items:center;gap:14px;border:1px solid var(--bd);background:#0b0b0b;border-radius:30px;padding:16px 18px;margin-top:12px;color:var(--tx);width:100%;text-align:left;font-size:16px}
+.sg i{flex:none;width:44px;height:44px;border-radius:50%;background:var(--cd);color:var(--ac);display:flex;align-items:center;justify-content:center}
+.bar{border:1px solid var(--bd);background:#0b0b0b;border-radius:32px;padding:8px}
+#inp{overflow-y:auto;scrollbar-width:none}#inp::-webkit-scrollbar{display:none}
+.em{margin:auto 0}
+#tp{position:fixed;left:12px;right:12px;bottom:84px;background:var(--cd);border:1px solid var(--bd);border-radius:20px;padding:10px 12px;display:none;align-items:center;gap:10px;z-index:25}#tp.on{display:flex}#tp .tr{flex:1;margin:0}#tp button{padding:8px;border-radius:50%}
+
+#dr{background:#161616;padding-bottom:env(safe-area-inset-bottom)}
+.dtop{display:flex;align-items:center;gap:12px;padding:16px;border-bottom:1px solid var(--bd);margin:0 6px}.dtop b{font-size:18px}.dtop .mu{font-size:13px}
+.av2{width:46px;height:46px;border-radius:14px;background:var(--cd);display:flex;align-items:center;justify-content:center}
+.nav{padding:10px 6px;border-bottom:1px solid var(--bd);margin:0 6px}.nav button{display:flex;align-items:center;gap:16px;width:100%;padding:13px 10px;font-size:17px;text-align:left}
+.rh{display:flex;justify-content:space-between;align-items:center;padding:12px 16px 4px;color:var(--mu);font-size:15px}.rh button{color:var(--mu);padding:4px}
+.dme{display:flex;align-items:center;gap:12px;padding:14px 16px;border-top:1px solid var(--bd);margin:0 6px;cursor:pointer}.dme span{flex:1;font-size:17px}
+.av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#10a37f,#6d5be6);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}
+.em{text-align:center}.lw svg{margin:0 auto 22px;filter:drop-shadow(0 0 30px rgba(16,163,127,.65))}.hd{font-size:34px;font-weight:600}
+#app.home::before{content:'';position:fixed;top:-80px;left:50%;width:130%;height:440px;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(16,163,127,.3),transparent 68%);pointer-events:none}
+#app.home #ttl,#app.home #b2,#app.home #b3{visibility:hidden}#app.home #b1{background:none}
+#sv{position:fixed;left:12px;right:12px;bottom:14px;background:var(--cd);border:1px solid var(--bd);border-radius:22px;padding:14px 16px;display:none;align-items:center;justify-content:space-between;gap:12px;z-index:50}#sv.on{display:flex}#sv .pb{margin:0}
+.vw .bar,.vw #chip{display:none}.vw .ac button:nth-child(3){display:none}
+@media(min-width:900px){body{display:flex}#dr{order:-1;position:relative;transform:none;flex:none;width:300px;max-width:none;z-index:1}#sc{display:none!important}#app{flex:1;min-width:0}#b1{display:none}#msgs{padding-left:max(16px,calc((100% - 760px)/2));padding-right:max(16px,calc((100% - 760px)/2))}.bar,#chip{width:min(760px,calc(100% - 32px));margin-left:auto;margin-right:auto}#chip{padding:0}#atc{left:324px}#tp,#sv{left:324px;right:24px}#pgb{width:min(640px,100%);margin:0 auto}.hd{font-size:42px}}
+
+.nav{padding:12px 12px 4px;margin:0}.nav button{border:1px solid var(--bd);border-radius:30px;background:#0b0b0b;margin-bottom:8px;padding:13px 18px}
+.dtop{border:1px solid var(--bd);border-radius:28px;background:#0b0b0b;margin:12px;padding:10px 14px;cursor:pointer}.dtop i{margin-left:auto;color:var(--mu)}
+.dme{border:1px solid var(--bd);border-radius:32px;background:#0b0b0b;margin:10px 12px;padding:10px 16px}
+.acd{background:var(--cd);border:1px solid var(--bd);border-radius:22px;padding:18px;text-align:left;margin:0 4px}.acd b{display:block;font-size:19px;margin:12px 0 4px}.acd .mu{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pl{display:inline-flex;align-items:center;gap:8px;background:var(--cd);border-radius:20px;padding:6px 14px 6px 8px;font-size:14px}#ap{padding:0 16px}
+.avc{display:inline-block;flex:none;border-radius:50%}
+#pg.glow::before{content:'';position:absolute;top:-60px;left:50%;width:130%;height:420px;transform:translateX(-50%);background:radial-gradient(ellipse at center,rgba(16,163,127,.3),transparent 68%);pointer-events:none}#pg>*{position:relative}
+.inf{line-height:1.7;margin-top:8px}.ab{text-align:center;padding:20px 0}.ab b{display:block;font-size:22px;margin-top:10px}
+.vw #ap{display:none}
+@media(min-width:900px){#ap{width:min(760px,calc(100% - 32px));margin:0 auto;padding:0 0 6px}}
+.acd b{color:var(--tx)}.ab svg{margin:0 auto}
+
+#app.home::before,#pg.glow::before{background:radial-gradient(ellipse at center,rgba(16,163,127,.6),transparent 68%);animation:gl 4.5s ease-in-out infinite alternate}
+@keyframes gl{from{opacity:.35}to{opacity:1}}
+.lw svg{animation:lgl 4.5s ease-in-out infinite alternate}@keyframes lgl{from{filter:drop-shadow(0 0 12px rgba(16,163,127,.35))}to{filter:drop-shadow(0 0 48px rgba(16,163,127,.95))}}
+.acd{position:relative}.cx{position:absolute;right:10px;top:10px;padding:6px;color:var(--mu);background:none!important}
+#pga{padding:8px}#pga:empty{display:none}
+.nav button{padding:11px 18px;margin-bottom:7px}
+.bd2{font-size:12px;border:1px solid var(--bd);border-radius:12px;padding:2px 10px;color:var(--mu);margin-left:8px;font-weight:400}
+.kc{margin:10px 0}.kc .r{align-items:center}.kc .s{margin-top:8px}.emp{text-align:center;margin-top:90px}.emp b{font-size:19px}
+.gd{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}.gc{background:var(--cd);border:1px solid var(--bd);border-radius:16px;padding:12px}.gc small{color:var(--mu);display:block;font-size:12px}.gc b{display:block;font-size:17px;margin:2px 0}
+.ed{display:flex;border:1px solid var(--bd);border-radius:14px;background:#050505;overflow:hidden}
+#ln{padding:10px 8px;color:var(--mu);text-align:right;font:13px/20px ui-monospace,Menlo,monospace;white-space:pre;overflow:hidden;height:220px;user-select:none}
+#cc{flex:1;height:220px;background:none;border:0;color:var(--tx);font:13px/20px ui-monospace,Menlo,monospace;padding:10px;outline:0;resize:none;white-space:pre;overflow:auto}
+.cpr{display:flex;gap:8px;overflow-x:auto;margin:6px 0 10px;scrollbar-width:none}.cpr button{border:1px solid var(--bd);border-radius:18px;padding:6px 14px;white-space:nowrap}.cpr .on{background:var(--tx);color:var(--bg)}
+.cnr{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--bd)}.cnr .b{flex:none;width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff}.cnr .t{flex:1;min-width:0}.cnr .t .mu{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.cb{border:1px solid var(--bd);background:var(--cd);border-radius:20px;padding:8px 16px}.cb.on{border-color:var(--ac);color:var(--ac)}
+button,.card,.row,.ci,.dme,.dtop,.sg,.nb,.pb{transition:border-color .2s,box-shadow .2s,transform .12s,background .2s}
+@media(hover:hover){.nb:hover,.pb:hover,.sg:hover,.nav button:hover,.dtop:hover,.dme:hover,.card:hover,.row:hover,.cb:hover,.cp button:hover,.cpr button:hover,.bar:hover,.in:hover,header button:hover{border-color:rgba(16,163,127,.85)!important;box-shadow:0 0 0 1px rgba(16,163,127,.4),0 0 14px rgba(16,163,127,.25)}}
+button:active,.row:active,.ci:active,.dme:active,.dtop:active,.sg:active{transform:scale(.95)}
+@media(min-width:900px){.lg{width:120px!important;height:120px!important}.wd{font-size:52px}@keyframes wi{to{max-width:380px;opacity:1;margin-left:22px}}}
+.cc .ct{position:absolute;right:10px;top:8px;display:flex;gap:12px}.cc .ct button{position:static;color:#aaa}.cc .ct button:hover{color:var(--ac)}
+@keyframes spn{to{transform:rotate(360deg)}}.a.th>svg{animation:spn 1.2s linear infinite;transform-origin:50% 50%}
+.tg{padding:6px 18px;border-radius:20px;background:var(--cd);border:1px solid #333;color:#aaa}.tg.on{background:var(--ac);color:#000;border-color:var(--ac)}
+.imb{display:inline-flex;align-items:center;background:var(--cd);border:1px solid var(--bd);border-radius:20px;padding:9px 16px;font-weight:600}
+.imm{position:absolute;top:calc(100% + 6px);left:0;min-width:250px;background:var(--cd);border:1px solid var(--bd);border-radius:16px;padding:6px;z-index:6;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.imo{display:flex;justify-content:space-between;align-items:center;width:100%;text-align:left;padding:12px;border-radius:12px}.imo.on{background:rgba(16,163,127,.15)}
+.sw{width:48px;height:28px;border-radius:14px;background:#3a3a3a;position:relative;padding:0}.sw::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:left .2s}.sw.on{background:var(--ac)}.sw.on::after{left:23px}
+.bar .gb{background:var(--ac);color:#fff;border-radius:20px;padding:9px 18px;font-weight:600}
+.imm{min-width:300px}.imo{gap:12px;align-items:center}.imo>div{flex:1}.imo .mu{font-size:13px;margin-top:2px}
+.ifr{position:relative;width:min(100%,420px);aspect-ratio:1/1;margin:8px auto 0;border:1px dashed var(--bd);border-radius:18px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.02)}.ifr.has{border-style:solid}.ifr #io{width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.fa{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:12px;padding:8px 14px;border-radius:14px;color:var(--tx);text-decoration:none}.fa.on{color:var(--ac)}
+#ip::-webkit-scrollbar{display:none}
+*{scrollbar-width:none}*::-webkit-scrollbar{display:none;width:0;height:0}
+.pill{display:inline-block;background:var(--cd);border:1px solid var(--bd);border-radius:14px;padding:4px 12px;color:var(--ac);font-weight:600}.pill:empty{display:none}
+.kcn{display:inline-flex;align-items:center;gap:4px}
+.ab.gl{padding:24px 16px;margin:6px 0 16px;border-radius:24px;background:rgba(255,255,255,.06);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.18);box-shadow:0 8px 32px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.14);user-select:none;-webkit-tap-highlight-color:transparent;cursor:pointer;transition:transform .12s}.ab.gl:active{transform:scale(.98)}
+#vbar{display:none}#app.vox #vbar{display:flex;align-items:center;gap:8px}#app.vox .bar:not(#vbar){display:none}
+#wv{flex:1;display:flex;align-items:center;justify-content:center;gap:3px;height:36px;overflow:hidden}#wv i{width:3px;height:4px;border-radius:2px;background:var(--ac)}
+#vbar .go{background:var(--ac);color:#fff;border-radius:50%}
+#b5{display:none}#app.home #b5,#app.inc #b5{display:flex}#app.inc #b5{color:var(--ac)}
+.vbd{display:inline-block!important;flex:none}
+.incx{padding:24px 18px}.ixi{width:96px;height:96px;border-radius:50%;margin:0 auto 18px;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--ac);box-shadow:0 0 40px rgba(16,163,127,.25)}.incx h2{margin:0 0 8px;font-size:26px}.incx p{max-width:420px;margin:0 auto 22px}
+.ixc{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:520px;margin:0 auto;text-align:left}.ixc>div{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:14px;font-size:13px}.ixc b{display:block;margin-bottom:6px;font-size:14px}.ixc ul{margin:0;padding-left:16px;line-height:1.6}
+@media(max-width:460px){.ixc{grid-template-columns:1fr}}
+#app.inc.home{background:radial-gradient(circle at 50% 28%,#1c1c24,#000 70%)}
+</style></head><body>
+<div id="sp"><div id="splg"></div><span class="wd">Chat<b>Max</b></span></div>
+<div id="app">
+<header><button onclick="dr(1)" id="b1"></button><div id="ttl">New Chat</div><button onclick="newChat()" id="b2"></button><button onclick="tg('mn')" id="b3"></button><button onclick="incogBtn()" id="b5" aria-label="Incognito"></button></header>
+<div id="msgs"></div><div id="chip"></div><div id="ap"></div>
+<div class="bar"><button onclick="tg('atc')" id="b4"></button><textarea id="inp" rows="1" placeholder="Message Chat Max..." oninput="upd()"></textarea><button id="act" onclick="act()"></button></div>
+<div class="bar" id="vbar"><button id="vx" onclick="micCancel()" aria-label="Cancel"></button><div id="wv"></div><button id="vs" onclick="micStop()" aria-label="Stop"></button><button id="vg" class="go" onclick="micSend()" aria-label="Send"></button></div>
+</div>
+<div class="sh" id="atc"><button onclick="$('f1').click();tg('atc')" id="o1"></button><button onclick="$('f2').click();tg('atc')" id="o2"></button><button onclick="$('f3').click();tg('atc')" id="o3"></button></div>
+<div class="sh" id="mn"><button onclick="ren()">Rename chat</button><button onclick="del()">Delete chat</button><button onclick="share()">Share chat</button></div>
+<input type="file" id="f1" accept="image/*" hidden onchange="pick(this,'img')"><input type="file" id="f2" accept="image/*" capture="environment" hidden onchange="pick(this,'img')"><input type="file" id="f3" hidden onchange="pick(this,'file')">
+<div id="sc" onclick="dr(0)"></div>
+<div id="dr"><div class="dtop" onclick="aboutPg()"><div class="av2" id="dlg"></div><div><b>Chat Max</b><div class="mu">by WE CODE</div></div><i id="chev"></i></div><div class="nav" id="nav"></div>
+<div class="rh"><span>Recent chats</span><button onclick="const q=$('sq');q.style.display=q.style.display=='block'?'none':'block'" id="sri"></button></div><input id="sq" placeholder="Search chats..." oninput="list()" style="display:none"><div id="cl"></div>
+<div class="dme" onclick="acctPg()"><div class="av" id="av">G</div><span id="nm">Guest</span><i id="gi"></i></div></div>
+<div id="sv"><div><b>Continue conversation</b><div class="mu">Keep chatting in this conversation</div></div><button class="pb" onclick="startShared()">Start</button></div>
+<div id="pg"><header><button onclick="pgBack()" id="pgx"></button><div id="ttl2" style="flex:1;font-weight:700;font-size:17px"></div><button id="pga"></button></header><div id="pgb"></div></div>
+<div id="tp"><button id="tb" onclick="tpToggle()"></button><div class="tr"><i id="tpi" style="width:0;background:var(--ac)"></i></div><button id="tx" onclick="endSpeak()"></button></div><input type="file" id="f4" multiple hidden onchange="kbFiles(this)"><div id="ts"></div><div id="md"><div class="mb" id="mb"></div></div>
+<script>
+/* ===== CONFIG ===== */
+const PROXY_URL='https://sparkling-bonus-b6a4.bhavyp682.workers.dev/chat';            // your backend URL (keeps the key secret). Leave empty only for local testing.
+const GROQ_KEY='';
+const IMG_URL='https://sparkling-bonus-b6a4.bhavyp682.workers.dev'; // Paste your Cloudflare Worker URL here (image generation)
+const SHARE_URL=IMG_URL; // the same Worker also stores shared knowledge (needs the KB binding)
+let UID=null;try{UID=localStorage.getItem('cm_uid')||('u'+Math.random().toString(36).slice(2,10)+Date.now().toString(36));localStorage.setItem('cm_uid',UID)}catch(e){UID='u'+Math.random().toString(36).slice(2,10)}
+const MODELS={free:'openai/gpt-oss-20b',pro:'openai/gpt-oss-120b',vision:'qwen/qwen3.8-27b'}; // verify names in Groq console
+const LIM={free:{m:1e9,i:1e9},pro:{m:1e9,i:1e9}},OWN={free:2,pro:5},KBL={free:3,pro:10},MAXT={free:900,pro:2000};
+const IDR=" IDENTITY (only when asked): Your name is Chat Max. If the user asks your name or who you are, say \"I am Chat Max\" in their language, then continue naturally. If the user asks who made you or which company made you, say you were made by the We Code company's developer Bhavy Patel, in their language. Never bring this up unless asked and never repeat it in later answers. Facts you may share when relevant: you are still in testing, the official launch by WE CODE is coming soon, the launch date is not announced yet, and your features were built over versions 1 to 9 by the developer. Never say you were made by OpenAI, Meta, Groq, Alibaba, Google or any other company, and never mention the underlying model.";
+/* ===== HELPERS ===== */
+const $=id=>document.getElementById(id),S=k=>JSON.parse(localStorage.getItem(k)||'null'),W=(k,v)=>localStorage.setItem(k,JSON.stringify(v));
+const P={menu:'<path d="M3 6h18M3 12h12M3 18h16"/>',plus:'<path d="M12 5v14M5 12h14"/>',dots:'<circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/>',mic:'<rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v4"/>',send:'<path d="M12 19V5M5 12l7-7 7 7"/>',stop:'<rect x="6" y="6" width="12" height="12" rx="2"/>',spk:'<path d="M11 5L6 9H2v6h4l5 4zM15 9a5 5 0 0 1 0 6M18 6a9 9 0 0 1 0 12"/>',cp:'<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/>',rg:'<path d="M23 4v6h-6M20.5 15a9 9 0 1 1-2.1-9.4L23 10"/>',bd:'<path d="M3 21h18M5 21V10l7-6 7 6v11M9 21v-6h6v6"/>',bk2:'<path d="M3 21h18M5 21v-9M10 21v-9M14 21v-9M19 21v-9M3 10l9-6 9 6z"/>',rb:'<rect x="4" y="8" width="16" height="12" rx="3"/><path d="M12 4v4M9 13h.01M15 13h.01M9 17h6"/>',x:'<path d="M18 6L6 18M6 6l12 12"/>',pl:'<polygon points="6 4 20 12 6 20"/>',layers:'<path d="M12 2L2 7l10 5 10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>',book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V3H6.5A2.5 2.5 0 0 0 4 5.5zM4 19.5V22h16"/>',plug:'<path d="M9 2v6M15 2v6M6 8h12v4a6 6 0 0 1-12 0zM12 18v4"/>',clock:'<circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/>',sr:'<circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/>',sl:'<path d="M4 21v-7M4 10V3M12 21v-9M12 8V3M20 21v-5M20 12V3M1 14h6M9 8h6M17 16h6"/>',chv:'<path d="M9 18l6-6-6-6"/>',cd:'<path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>',st:'<path d="M12 2l3 7h7l-5.5 4.5 2 7.5L12 17l-6.5 4 2-7.5L2 9h7z"/>',bk:'<path d="M19 12H5M12 19l-7-7 7-7"/>',im:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>',cm:'<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',fl:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6"/>'};
+const ic=(k,s=20)=>'<svg width="'+s+'" height="'+s+'" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">'+P[k]+'</svg>';
+P.au='<path d="M12 19V5M5 12l7-7 7 7"/>';P.sq='<rect x="6" y="6" width="12" height="12" rx="2" fill="currentColor"/>';P.inc='<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24M1 1l22 22"/>';P.dl='<path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/>';P.sh='<path d="M12 16V4m0 0L8 8m4-4l4 4M5 12v8h14v-8"/>';P.up='<path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>';P.dn='<path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/>';P.cx='<path d="M6 6l12 12M18 6L6 18"/>';P.ck='<path d="M5 12l5 5 9-10"/>';P.lk='<rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/>';P.fs='<path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>';P.img='<rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="9" cy="9" r="2"/><path d="M21 15l-5-5L5 21"/>';
+const VBP=[...Array(16)].map((_,i)=>{const a=i*Math.PI/8,r=i%2?9.4:11;return(12+r*Math.sin(a)).toFixed(2)+','+(12-r*Math.cos(a)).toFixed(2)}).join(' ');
+const VB=z=>'<svg class="vbd" viewBox="0 0 24 24" width="'+z+'" height="'+z+'" style="display:inline-block;vertical-align:middle;margin-left:5px;flex:none"><polygon points="'+VBP+'" fill="#1d9bf0" stroke="#1d9bf0" stroke-width="1.2" stroke-linejoin="round"/><path d="M7.8 12.4l2.9 2.9 5.6-6" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const dvOn=()=>S('cm_dvon')!==0;
+const nmB=(n,z,own,dv)=>'<span style="display:inline-flex;align-items:center;max-width:100%;vertical-align:middle"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(n)+'</span>'+((own?S('cm_dev'):dv)?VB(z):'')+'</span>';
+const bvCard=()=>'<div class="card" style="margin-bottom:14px"><div style="display:flex;align-items:center;margin-bottom:6px"><b style="font-size:17px">Blue Badge</b>'+VB(18)+'</div><div class="mu" style="margin-bottom:8px">Advantages of the Blue Badge</div><div style="line-height:1.75;font-size:14px">1. Get 5 coins for every message in Free mode.<br>2. Enjoy 7 days of Pro.<br>3. The Blue Badge shows in your account.<br>4. Other users can see your Blue Badge.<br>5. Your account value can increase.</div></div>';
+const dvCard=()=>S('cm_dev')?'<div class="card r"><div><b>Show Blue Badge</b><div class="mu" style="font-size:13px;margin-top:2px">Let other users see your badge</div></div><button class="sw'+(dvOn()?' on':'')+'" id="dvt" onclick="dvTog()" aria-label="Show Blue Badge"></button></div>':'';
+async function dvTog(){const on=!dvOn();W('cm_dvon',on?1:0);if($('dvt'))$('dvt').className='sw'+(on?' on':'');if(SHARE_URL&&!kbOff){for(const k of kb)if(k.pub&&k.key)await kbPublish(k)}toast(on?'Other users can see your Blue Badge.':'Your Blue Badge is hidden from other users.')}
+const LOGO=s=>'<svg width="'+s+'" height="'+s+'" viewBox="0 0 60 60"><defs><linearGradient id="g'+s+'" x1="0" y1="0" x2="60" y2="60" gradientUnits="userSpaceOnUse"><stop stop-color="#10a37f"/><stop offset="1" stop-color="#0d8f6f"/></linearGradient></defs><g fill="url(#g'+s+')"><path class="pt" d="M30 3C30 3 39 12 39 21 39 25.5 36 30 30 30 24 30 21 25.5 21 21 21 12 30 3 30 3Z"/><path class="pt" opacity=".75" d="M57 30C57 30 48 39 39 39 34.5 39 30 36 30 30 30 24 34.5 21 39 21 48 21 57 30 57 30Z"/><path class="pt" opacity=".55" d="M30 57C30 57 21 48 21 39 21 34.5 24 30 30 30 36 30 39 34.5 39 39 39 48 30 57 30 57Z"/><path class="pt" opacity=".75" d="M3 30C3 30 12 21 21 21 25.5 21 30 24 30 30 30 36 25.5 39 21 39 12 39 3 30 3 30Z"/></g><circle cx="30" cy="30" r="4" fill="#fff"/></svg>';
+const esc=t=>t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+function md(t){return esc(t).split('```').map((p,i)=>i%2?'<div class="cc"><div class="ct"><button onclick="cpC(this)">'+ic('cp',16)+'</button><button onclick="fsC(this)">'+ic('fs',16)+'</button></div><pre>'+p.replace(/^[^\n]*\n/,'')+'</pre></div>':p.replace(/^#{1,3} (.*)$/gm,'<b>$1</b>').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/^[-*] /gm,'• ')).join('')}
+let tt;function toast(m){const e=$('ts');e.textContent=m;e.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>e.classList.remove('on'),2600)}
+/* ===== STATE ===== */
+let kb=S('cm_k')||[],cn=S('cm_cn')||[],pgPrev=null,viewC=null,pshown=false,pf={},chats=S('cm_c')||[],curId=null,agents=S('cm_a')||[],mode=S('cm_m')||'free',pend=null,busy=false,ctl=null,stopped=false,att=null,lastImg=null;
+const save=()=>{W('cm_c',chats.filter(c=>!c.inc));W('cm_a',agents);W('cm_m',mode);W('cm_k',kb);W('cm_cn',cn)},cur=()=>viewC||chats.find(c=>c.id===curId);
+function usage(){let u=S('cm_u');const d=new Date().toDateString();if(!u||u.d!==d){u={d,m:0,i:0};W('cm_u',u)}return u}
+document.documentElement.dataset.t='dark';
+/* ===== UI ===== */
+function init(){$('b5').innerHTML=ic('inc',22);$('vx').innerHTML=ic('x',20);$('vs').innerHTML=ic('sq',18);$('vg').innerHTML=ic('au',20);setTimeout(proChk,2600);setInterval(proChk,30000);$('splg').innerHTML=LOGO(64).replace('<svg ','<svg class="lg" ');$('b1').innerHTML=ic('menu',24);$('b2').innerHTML=ic('plus',22);$('b3').innerHTML=ic('dots',22);$('b4').innerHTML=ic('plus',22);$('pgx').innerHTML=ic('bk',22);
+$('o1').innerHTML=ic('im')+'Photos';$('o2').innerHTML=ic('cm')+'Take photo';$('o3').innerHTML=ic('fl')+'Files';navInit();tpIcon();upd();list();render();setTimeout(()=>$('sp').classList.add('h'),7000)}
+function upd(){const i=$('inp');i.style.height='auto';i.style.height=Math.min(i.scrollHeight,120)+'px';$('act').innerHTML=ic(busy?'stop':(i.value.trim()||att)?'send':'mic')}
+function tg(id){const e=$(id);const o=e.classList.contains('on');document.querySelectorAll('.sh').forEach(x=>x.classList.remove('on'));if(!o)e.classList.add('on')}
+function dr(o){$('dr').classList.toggle('on',!!o);$('sc').classList.toggle('on',!!o);if(o)list()}
+function theme(){const t=document.documentElement.dataset.t=='dark'?'light':'dark';document.documentElement.dataset.t=t;W('cm_t',t)}
+function navInit(){$('dlg').innerHTML=LOGO(30);$('chev').innerHTML=ic('chv',22);$('sri').innerHTML=ic('sr',20);$('gi').innerHTML=ic('sl',22);
+$('nav').innerHTML=[['rb','Agents','agentsPg()'],['img','Image generate','imgPg()'],['book','Knowledge base','kbPg()'],['cd','Code Assistant','codePg()'],['st','Plan & usage','planPg()']].map(x=>'<button onclick="'+x[2]+'">'+ic(x[0],22)+'<span>'+x[1]+'</span></button>').join('')}
+function me(){const n=(S('cm_p')||{}).name;$('nm').innerHTML=nmB(n||'Guest',15,1,0);$('av').textContent=(n||'G')[0].toUpperCase()}
+function list(){me();const q=$('sq').value.toLowerCase();$('cl').innerHTML=chats.filter(c=>!c.inc&&c.title.toLowerCase().includes(q)).map(c=>'<div class="ci'+(c.id==curId?' on':'')+'" onclick="openChat('+c.id+')">'+esc(c.title)+'</div>').join('')||'<div class="ci mu">No chats yet</div>'}
+function openChat(id){leaveIncog();curId=id;pend=null;render();dr(0)}
+function leaveIncog(){const had=incog||chats.some(c=>c.inc);if(!had)return;chats=chats.filter(c=>!c.inc);incog=false;curId=null;pend=null;save()}
+function startIncog(){if(busy)return;curId=null;pend=null;incog=true;render();dr(0);toast('Incognito chat. Nothing will be saved.')}
+function incogBtn(){if(!incog)return startIncog();const c=cur();if(!c||!c.msgs.length){leaveIncog();render();list();return}mdl('<h3>Exit incognito?</h3><p class="mu" style="margin-bottom:14px">This chat will be deleted permanently.</p><button class="pb g" onclick="mdx()">Stay</button><button class="pb" onclick="mdx();leaveIncog();render();list()">Exit</button>')}
+function newChat(){leaveIncog();curId=null;pend=null;render();list();dr(0)}
+function render(){const c=cur(),m=$('msgs'),ag=AG(c?c.agent:pend);$('app').classList.toggle('home',!(c&&c.msgs.length));$('app').classList.toggle('inc',incog);$('ap').innerHTML=(ag&&c&&c.msgs.length)?'<span class="pl">'+avt(ag,22)+esc(ag.name)+'</span>':'';$('ttl').textContent=c?(c.inc?'Incognito chat':c.title):(ag?ag.name:'Chat Max');m.innerHTML='';
+if(!c||!c.msgs.length){if(ag){m.innerHTML='<div class="em"><div class="acd"><button class="cx" onclick="pend=null;render()">'+ic('x',20)+'</button>'+avt(ag,64)+'<b>'+esc(ag.name)+'</b><div class="mu">'+esc(ag.desc)+'</div></div></div>';return}
+const h=new Date().getHours(),g=h<12?'Good morning':h<17?'Good afternoon':h<21?'Good evening':'Good night',pp=S('cm_p');
+if(incog){m.innerHTML='<div class="em incx"><div class="ixi">'+ic('inc',54)+'</div><h2>You\'ve gone incognito</h2><p class="mu">Chat Max will not save this chat. When you leave incognito, everything in it is deleted.</p><div class="ixc"><div><b>Chat Max won\'t save</b><ul class="mu"><li>Your messages and answers</li><li>Chat history</li><li>The title of this chat</li></ul></div><div><b>Others may still see</b><ul class="mu"><li>The AI service that writes the answers</li><li>Your internet provider or network admin</li><li>Files you upload</li></ul></div></div></div>';return}
+m.innerHTML='<div class="em"><div class="lw">'+LOGO(92)+'</div><div class="mu gr2">'+g+(pp?', '+esc(pp.name):'')+'!</div><div class="hd">Let\'s get to work.</div>'+(incog?'<div class="mu" style="margin-top:10px;display:flex;align-items:center;justify-content:center;gap:6px">'+ic('inc',16)+'Incognito chat. Nothing is saved.</div>':'')+'</div>';return}
+c.msgs.forEach((x,i)=>{const d=document.createElement('div');if(x.r=='user'){d.className='u';d.innerHTML=(x.att?'<i>['+esc(x.att)+']</i><br>':'')+esc(x.c.split('\n\n[File:')[0])}else{d.className='a';d.innerHTML=LOGO(26)+'<div class="tx">'+md(x.c)+'</div><div class="ac"><button onclick="speak('+i+')">'+ic('spk',18)+'</button><button onclick="copyMsg('+i+')">'+ic('cp',18)+'</button>'+(i==c.msgs.length-1?'<button onclick="send(1)">'+ic('rg',18)+'</button>':'')+'</div>'}m.appendChild(d)});m.scrollTop=m.scrollHeight}
+function chip(){$('chip').innerHTML=att?'<span class="ch">'+esc(att.n)+' <button onclick="att=null;chip();upd()">✕</button></span>':'';upd()}
+/* ===== ATTACH ===== */
+function shrink(f){return new Promise(r=>{const im=new Image();im.onload=()=>{const s=Math.min(1,1024/Math.max(im.width,im.height)),c=document.createElement('canvas');c.width=im.width*s;c.height=im.height*s;c.getContext('2d').drawImage(im,0,0,c.width,c.height);r(c.toDataURL('image/jpeg',.8))};im.src=URL.createObjectURL(f)})}
+async function pick(el,t){const f=el.files[0];el.value='';if(!f)return;
+if(t=='img'){att={t:'img',d:await shrink(f),n:f.name||'photo'};chip();return}
+if(f.size>200000||!/\.(txt|md|csv|json|js|html|css|py|java|c|cpp|xml|log)$/i.test(f.name))return warn('This file type is not supported yet. Use txt, code, csv or json (max 200 KB).');
+const r=new FileReader();r.onload=()=>{att={t:'file',x:r.result,n:f.name};chip()};r.readAsText(f)}
+/* ===== CHAT ===== */
+function sysP(c){const ag=AG(c&&c.agent);return "You are Chat Max, a smart, warm and natural AI assistant, like a helpful friend. Talk like a real person, not a robot. Reply in the same language and script the user writes in: if the user writes Hinglish in Roman letters, reply in Hinglish in Roman letters and never in Devanagari unless they do. Read the whole conversation, use the facts the user tells you, and react to what they actually said. Never repeat the same sentence or line from an earlier reply. Use **bold** for key points."+(mode=='pro'?' Give thorough, well-structured answers.':' Give clear, complete answers of a natural length, not one-liners.')+(ag?' Act as this agent: '+ag.prompt:'')+usr()+kbCtx()+IDR+(ag?' Your active agent is '+ag.name+'. When asked your name say "I am Chat Max ('+ag.name+')".':'')}
+async function ask(msgs,model,max,sig){const r=await fetch(PROXY_URL||'https://api.groq.com/openai/v1/chat/completions',{method:'POST',signal:sig,headers:Object.assign({'Content-Type':'application/json'},PROXY_URL?{}:{Authorization:'Bearer '+GROQ_KEY}),body:JSON.stringify(Object.assign({model,messages:msgs,max_tokens:max},model.startsWith('openai/')?{reasoning_effort:'low'}:{}))});const d=await r.json();if(d.error)throw new Error(d.error.message);return d.choices[0].message.content||''}
+function act(){if(busy)return stopTask();if($('inp').value.trim()||att)return send();mic()}
+function stopTask(){stopped=true;if(ctl)ctl.abort()}
+async function send(regen){
+if(busy)return;const L=LIM[mode],u=usage();let c=cur();const text=$('inp').value.trim();
+if(!regen&&!text&&!att)return;
+if(u.m>=L.m)return warn("You've reached your daily limit. Please come back after 12:00 AM.");
+if(!regen&&att&&att.t=='img'&&u.i>=L.i)return warn("You've used your daily image limit. It resets at 12:00 AM.");
+if(!c){c={id:Date.now(),title:'New Chat',msgs:[],agent:pend,inc:incog?1:0};chats.unshift(c);curId=c.id}
+if(regen){const l=c.msgs[c.msgs.length-1];if(l&&l.r=='assistant')c.msgs.pop()}
+else{let t=text;if(att&&att.t=='file')t+='\n\n[File: '+att.n+']\n'+att.x.slice(0,6000);
+c.msgs.push({r:'user',c:t||'Describe this image.',att:att&&att.n,im:!!(att&&att.t=='img')});if(att&&att.t=='img'){lastImg=att.d;u.i++}
+if(c.title=='New Chat')c.title=(text||att.n).slice(0,30);att=null;$('inp').value='';chip()}
+u.m++;W('cm_u',u);if(mode=='free'&&!regen)coinAdd();save();render();list();if(!S('cm_p')&&!pshown){pshown=1;setTimeout(idPop,1500)}
+const last=c.msgs[c.msgs.length-1],hasImg=last.im&&lastImg;
+const lab=hasImg?'Describing image...':/\[File:/.test(last.c)?'Describing file...':'Thinking...';
+const b=document.createElement('div');b.className='a th';b.innerHTML=LOGO(26)+'<div class="st">'+lab+'</div><button class="sb" onclick="stopTask()">Stop Task</button><div class="tx"></div>';$('msgs').appendChild(b);$('msgs').scrollTop=1e9;
+busy=true;stopped=false;ctl=new AbortController();upd();
+try{const hist=c.msgs.slice(-14).map(x=>({role:x.r,content:x.c}));let model=MODELS[mode];
+if(hasImg){model=MODELS.vision;hist[hist.length-1].content=[{type:'text',text:last.c},{type:'image_url',image_url:{url:lastImg}}]}
+let reply=await ask([{role:'system',content:sysP(c)}].concat(hist),model,MAXT[mode],ctl.signal);if(!reply.trim())reply="Sorry, I don't have an answer for that. Please try again.";
+b.querySelector('.st').textContent='Thought';b.querySelector('.sb').remove();const el=b.querySelector('.tx');
+await new Promise(res=>{let i=0;const t=setInterval(()=>{if(stopped){clearInterval(t);return res()}i+=6;el.innerHTML=md(reply.slice(0,i));$('msgs').scrollTop=1e9;if(i>=reply.length){clearInterval(t);res()}},16)});
+b.classList.remove('th');if(!stopped){c.msgs.push({r:'assistant',c:reply});save()}
+}catch(e){if(!stopped)warn('Something went wrong: '+e.message)}
+busy=false;ctl=null;render();upd()}
+function cpTx(t){const ok=()=>toast('Copied');const fb=()=>{const a=document.createElement('textarea');a.value=t;a.style.cssText='position:fixed;opacity:0;top:0';document.body.appendChild(a);a.focus();a.select();try{document.execCommand('copy')?ok():toast('Copy failed')}catch(e){toast('Copy failed')}a.remove()};if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(t).then(ok,fb);else fb()}
+function copyMsg(i){cpTx(cur().msgs[i].c)}
+function cpC(b){cpTx(b.closest('.cc').querySelector('pre').textContent)}
+let fsT='';function fsC(b){fsT=b.closest('.cc').querySelector('pre').textContent;pg('Code','<div class="cc" style="margin:0 0 12px"><pre style="margin:0">'+esc(fsT)+'</pre></div><button class="pb" style="width:100%" onclick="cpTx(fsT)">Copy code</button>')}
+let tts={q:[],i:0,on:false,paused:false,cum:[0],tot:1};
+function tpIcon(){$('tb').innerHTML=ic(tts.on&&!tts.paused?'stop':'pl');$('tx').innerHTML=ic('x')}
+function chunks(t){const o=[];t.replace(/```[\s\S]*?```/g,' ').replace(/[*#`_~>|]/g,'').replace(/•/g,'').replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu,'').split(/(?<=[.!?\u0964\n])\s*/).forEach(x=>{x=x.trim();if(!x)return;while(x.length>230){let k=x.lastIndexOf(',',230);if(k<40)k=x.lastIndexOf(' ',230);o.push(x.slice(0,k+1));x=x.slice(k+1).trim()}if(x)o.push(x)});return o}
+function pickV(t){const v=speechSynthesis.getVoices(),f=l=>v.find(x=>x.lang.replace('_','-').toLowerCase().startsWith(l));return /[\u0900-\u097F]/.test(t)?(f('hi')||f('en-in')||f('en')):(f('en-in')||f('en-us')||f('en')||v[0])}
+function speak(i){if(!window.speechSynthesis)return warn('Read aloud is not supported on this browser.');speechSynthesis.cancel();const q=chunks(cur().msgs[i].c),cum=[0];q.forEach(x=>cum.push(cum[cum.length-1]+x.length));tts={q,i:0,on:true,paused:false,cum,tot:cum[cum.length-1]||1};$('tp').classList.add('on');tpIcon();prog(0);setTimeout(nextS,150)}
+function prog(a){const el=$('tpi');el.style.transition='none';if(!a){el.style.width=(tts.cum[tts.i]/tts.tot*100)+'%';return}el.style.width=(tts.cum[tts.i]/tts.tot*100)+'%';void el.offsetWidth;el.style.transition='width '+Math.max(.6,(tts.cum[tts.i+1]-tts.cum[tts.i])/14)+'s linear';el.style.width=(tts.cum[tts.i+1]/tts.tot*100)+'%'}
+function mk(i){const t=tts.q[i],u=new SpeechSynthesisUtterance(t),v=pickV(t);if(v){u.voice=v;u.lang=v.lang}else u.lang=/[\u0900-\u097F]/.test(t)?'hi-IN':'en-IN';
+u.onstart=()=>{if(!tts.on||tts.paused)return;tts.i=i;tts.st=true;tts.rt=0;clearTimeout(tts.w);prog(1);if(i+1<tts.q.length&&tts.nq<i+1){tts.nq=i+1;speechSynthesis.speak(mk(i+1))}};
+u.onend=()=>{if(i>=tts.q.length-1&&tts.on&&!tts.paused)endSpeak()};
+u.onerror=e=>{if(e.error=='canceled'||e.error=='interrupted')return;warn('Read aloud is not available. Please install Google Text-to-Speech on your phone.');endSpeak()};return u}
+function nextS(){if(!tts.on||tts.paused)return;if(tts.i>=tts.q.length)return endSpeak();tts.nq=tts.i;tts.st=false;speechSynthesis.speak(mk(tts.i));clearTimeout(tts.w);
+tts.w=setTimeout(()=>{if(tts.st||!tts.on||tts.paused)return;speechSynthesis.cancel();if(!tts.rt){tts.rt=1;setTimeout(nextS,250)}else{tts.rt=0;warn('Read aloud did not start. Please install or enable Google Text-to-Speech on your phone.');endSpeak()}},3500)}
+function tpToggle(){if(tts.on&&!tts.paused){tts.paused=true;speechSynthesis.cancel();const el=$('tpi'),f=el.getBoundingClientRect().width/el.parentNode.getBoundingClientRect().width;el.style.transition='none';el.style.width=(f*100)+'%'}else if(tts.q.length){tts.on=true;tts.paused=false;setTimeout(nextS,100)}tpIcon()}
+function endSpeak(){clearTimeout(tts.w);tts={q:[],i:0,on:false,paused:false,cum:[0],tot:1};speechSynthesis.cancel();$('tp').classList.remove('on');prog(0);tpIcon()}
+let rec=null,listening=false;
+let micOn=0,micMode='',micTxt='',micLast='',micLvl=0,micTm=null,incog=false;
+function wvBuild(){$('wv').innerHTML=Array(34).fill('<i></i>').join('')}
+function wvTick(){const b=$('wv').children,t=Date.now()/1000;micLvl=Math.max(.08,micLvl*.86);for(let i=0;i<b.length;i++){b[i].style.height=(4+micLvl*26*(.35+.65*Math.abs(Math.sin(t*3.1+i*.55)))*(.65+.35*Math.random())).toFixed(1)+'px'}}
+function mic(){const R=window.SpeechRecognition||window.webkitSpeechRecognition;if(!R)return warn('Voice input is not supported on this browser.');
+if(!window.isSecureContext)return warn('Voice input works only on the HTTPS link. It will work once Chat Max is hosted.');
+if(micOn)return;micOn=1;micMode='';micTxt='';micLast='';micLvl=.1;wvBuild();$('app').classList.add('vox');micTm=setInterval(wvTick,70);micRun(R)}
+function micRun(R){try{rec=new R();rec.lang='en-IN';rec.continuous=true;rec.interimResults=true;
+rec.onstart=()=>{listening=true};rec.onspeechstart=rec.onsoundstart=()=>{micLvl=1};
+rec.onresult=e=>{micLvl=1;let f='',it='';for(let i=e.resultIndex;i<e.results.length;i++){const r=e.results[i];if(r.isFinal)f+=r[0].transcript+' ';else it+=r[0].transcript}if(f)micTxt+=f;micLast=it};
+rec.onerror=e=>{if(e.error=='not-allowed'||e.error=='service-not-allowed'){micMode='cancel';micEnd();warn('Microphone permission is blocked. Allow the microphone for this site in Chrome settings.')}else if(e.error!='no-speech'&&e.error!='aborted')toast('Voice input error: '+e.error)};
+rec.onend=()=>{listening=false;if(micOn&&!micMode){setTimeout(()=>{if(micOn&&!micMode)micRun(R)},150);return}micDone()};
+rec.start()}catch(x){micMode='cancel';micEnd();warn('Could not start voice input.')}}
+function micEnd(){micOn=0;clearInterval(micTm);$('app').classList.remove('vox')}
+function micDone(){if(!$('app').classList.contains('vox'))return;const t=(micTxt+' '+micLast).replace(/\s+/g,' ').trim(),m=micMode;micEnd();if(m=='cancel')return;if(!t){toast('No speech heard.');return}const i=$('inp');i.value+=(i.value&&!/\s$/.test(i.value)?' ':'')+t;upd();if(m=='send')send()}
+function micCancel(){micMode='cancel';micOn=0;try{rec.abort()}catch(e){}micEnd()}
+function micStop(){micMode='stop';micOn=0;try{rec.stop()}catch(e){}setTimeout(micDone,3000)}
+function micSend(){micMode='send';micOn=0;try{rec.stop()}catch(e){}setTimeout(micDone,3000)}
+function mdl(h){$('mb').innerHTML=h;$('md').classList.add('on')}
+function sug(b){$('inp').value=b.querySelector('span').textContent;upd();send()}
+function warn(m){mdl('<p style="margin-bottom:16px">'+esc(m)+'</p><button class="pb" onclick="mdx()">OK</button>')}
+function mdx(){$('md').classList.remove('on')}
+function conf(m,f){window._cf=f;mdl('<h3>'+m+'</h3><button class="pb g" onclick="mdx()">Cancel</button><button class="pb" onclick="mdx();_cf()">Delete</button>')}
+function ren(){tg('mn');const c=cur();if(!c)return;mdl('<h3>Rename chat</h3><input class="in" id="rn" value="'+esc(c.title)+'"><button class="pb g" onclick="mdx()">Cancel</button><button class="pb" onclick="saveR()">Save</button>')}
+function saveR(){const n=$('rn').value.trim();if(n){cur().title=n;save();render();list()}mdx()}
+function chips(k,o){return '<div class="cp" id="c_'+k+'">'+o.map(x=>'<button class="'+(pf[k]==x?'on':'')+'" onclick="pickC(\''+k+'\',\''+x+'\')">'+x+'</button>').join('')+'</div>'}
+function pickC(k,v){pf[k]=v;document.querySelectorAll('#c_'+k+' button').forEach(b=>b.classList.toggle('on',b.textContent==v));if(k=='country')$('oc').style.display=v=='Other'?'block':'none'}
+function idPop(){mdl('<h3>Create your account</h3><p class="mu" style="margin-bottom:14px">Create your account for better responses and a better experience.</p><button class="pb g" onclick="mdx()">Close</button><button class="pb" onclick="mdx();acctForm()">Create</button>')}
+function acctForm(){pf=Object.assign({},S('cm_p')||{});const nm=pf.name||'';pg(nm?'Edit account':'Create your account','<div class="card" style="text-align:center"><div class="av" id="fav" style="margin:0 auto 10px;width:64px;height:64px;font-size:26px">'+esc((nm||'G')[0].toUpperCase())+'</div><b style="font-size:19px" id="fnm">'+esc(nm||'Your name')+'</b><div class="mu">Tell Chat Max about you</div></div><div class="card"><label class="mu">Name</label><input class="in" id="pn" value="'+esc(nm)+'" oninput="$(\'fav\').textContent=(this.value.trim()[0]||\'G\').toUpperCase();$(\'fnm\').textContent=this.value.trim()||\'Your name\'"><label class="mu">Age</label><input class="in" id="pa" type="number" value="'+(pf.age||'')+'" style="margin-bottom:0"></div><div class="card"><label class="mu">Country</label>'+chips('country',['India','Russia','USA','Other'])+'<input class="in" id="oc" placeholder="Type your country" style="display:none"></div><div class="card"><label class="mu">Gender</label>'+chips('gender',['Male','Female','Other'])+'<label class="mu">Type</label>'+chips('type',['Student','Working','Other'])+'</div>'+dvCard()+'<button class="pb" style="width:100%;margin:6px 0 0" onclick="saveP()">Save</button>')}
+function saveP(){const n=$('pn').value.trim();if(!n)return warn('Please enter your name.');if(pf.country=='Other')pf.country=$('oc').value.trim()||'Other';pf.name=n;pf.age=$('pa').value;W('cm_p',pf);closePg();if(!cur())render();toast('Account saved.')}
+function del(){tg('mn');const c=cur();if(!c)return;conf('Delete this chat?',()=>{chats=chats.filter(x=>x.id!=c.id);curId=null;save();render();list()})}
+const b64=a=>btoa(String.fromCharCode(...a)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''),unb=t=>Uint8Array.from(atob(t.replace(/-/g,'+').replace(/_/g,'/')),c=>c.charCodeAt(0));
+async function zip(d,en){const cs=en?new CompressionStream('deflate-raw'):new DecompressionStream('deflate-raw'),w=cs.writable.getWriter();w.write(en?new TextEncoder().encode(d):d);w.close();return new Uint8Array(await new Response(cs.readable).arrayBuffer())}
+function share(){tg('mn');const c=cur();if(!c||!c.msgs.length)return toast('Nothing to share yet.');const t=c.msgs.map(m=>(m.r=='user'?'You: ':'Chat Max: ')+m.c).join('\n\n');
+if(navigator.share)return navigator.share({title:c.title,text:t}).catch(()=>{});const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([t],{type:'text/plain'}));a.download=c.title+'.txt';a.click()}
+async function loadShared(){if(!location.hash.startsWith('#s='))return;try{const d=JSON.parse(new TextDecoder().decode(await zip(unb(location.hash.slice(3)),0)));viewC={id:Date.now(),title:d.t,msgs:d.m,agent:null};$('app').classList.add('vw');render();$('sv').classList.add('on')}catch(e){warn('This shared chat link is not valid.')}}
+function startShared(){chats.unshift(viewC);curId=viewC.id;viewC=null;save();$('app').classList.remove('vw');$('sv').classList.remove('on');history.replaceState(null,'',location.href.split('#')[0]);render();list()}
+function clearAll(){conf('Delete all chats?',()=>{chats=[];curId=null;save();render();list()})}
+/* ===== PAGES ===== */
+function pgBack(){const f=pgPrev;pgPrev=null;f?f():closePg()}
+function pg(t,h,a){$('pga').innerHTML=a?ic('plus',24):'';$('pga').onclick=a||null;pgPrev=null;$('pg').classList.remove('glow');$('ttl2').textContent=t;$('pgb').innerHTML=h;$('pg').classList.add('on')}
+function closePg(){$('pg').classList.remove('on')}
+function toolsPg(){pg('Tools',[['Agents','agentsPg()'],['Skills','skillsPg()'],['Knowledge base',"toast('Coming soon.')"],['Connectors',"toast('Coming soon.')"],['Scheduled tasks',"toast('Coming soon.')"]].map(x=>'<div class="row" onclick="'+x[1]+'">'+x[0]+'</div>').join(''))}
+let im={m:'core',hd:0,ref:null,src:null,fb:0},igRun=0;const IMN={core:'Vision',orion:'Super Vision'},IMH='<div class="mu" style="text-align:center;padding:0 20px">Your image will appear here.</div>';
+function imgPg(){dr(0);pg('Image generate','<div style="padding-bottom:110px"><div id="imw" style="position:relative;margin-top:6px"><button class="imb" onclick="imMenu()">'+LOGO(18)+'<span id="imn" style="margin-left:8px"></span><span style="margin-left:8px">\u25be</span></button><div class="imm" id="imd" style="display:none"></div></div><div class="r" style="margin:16px 2px"><b>HD Quality</b><button class="sw" id="ihd" onclick="im.hd=!im.hd;imUI()" aria-label="HD Quality"></button></div><div class="ifr" id="ifr"><div id="io"></div></div><div style="width:min(100%,420px);margin:10px auto 0;display:flex;justify-content:space-between;align-items:center;min-height:30px"><span class="mu" id="ilb"></span><span class="pill" id="ist"></span></div><div style="text-align:center;margin-top:12px"><button class="pb g" id="icl" style="display:none" onclick="imClear()">Clear image</button></div><input type="file" id="irin" accept="image/*" style="display:none" onchange="imRef(this)"></div><div class="bar" style="position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:min(640px,calc(100% - 24px));margin:0 0 calc(10px + env(safe-area-inset-bottom));box-sizing:border-box;z-index:5"><button onclick="$(\'irin\').click()" aria-label="Attach image">'+ic('plus',22)+'</button><div id="irf" style="display:none;position:relative;align-self:center"><img id="iri" style="width:38px;height:38px;border-radius:10px;object-fit:cover"><button onclick="imRefX()" aria-label="Remove image" style="position:absolute;top:-6px;right:-6px;width:18px;height:18px;padding:0;border-radius:50%;background:#333;color:#fff;font-size:12px;line-height:18px">\u00d7</button></div><textarea id="ip" rows="1" placeholder="Describe the image you want..." style="flex:1;background:none;border:0;color:var(--tx);font:inherit;resize:none;max-height:120px;padding:9px 8px;outline:0;overflow-y:hidden;scrollbar-width:none" oninput="this.style.height=\'auto\';this.style.height=Math.min(this.scrollHeight,120)+\'px\';this.style.overflowY=this.scrollHeight>120?\'auto\':\'hidden\'"></textarea><button class="gb" id="igb" onclick="imGen()">Generate</button></div>');$('pg').classList.add('glow');$('pgb').onclick=e=>{const d=$('imd');if(d&&!e.target.closest('#imw'))d.style.display='none'};imUI();imRefUI();if(im.src)showImg();else $('io').innerHTML=IMH}
+function showImg(){if(!$('io')||!im.src)return;$('io').innerHTML='<img id="iimg" src="'+im.src+'" style="width:100%;height:100%;object-fit:cover;cursor:zoom-in" onclick="imFull()">';$('ifr').classList.add('has');$('icl').style.display='inline-block'}
+function imClear(){if(igRun)return toast('Please wait until the image is ready.');im.src=null;im.fb=0;imQ('','');$('io').innerHTML=IMH;$('ifr').classList.remove('has');$('icl').style.display='none'}
+function imMenu(){const d=$('imd');d.style.display=d.style.display=='none'?'block':'none'}
+function imUI(){$('imn').textContent=IMN[im.m];const pro=mode=='pro';$('imd').innerHTML=[['core','Vision','Free','Fast and free. Good for everyday images.'],['orion','Super Vision','Pro','More detail and finer quality.']].map(x=>'<button class="imo'+(im.m==x[0]?' on':'')+'" onclick="imPick(\''+x[0]+'\')"><div><b>'+x[1]+'</b><span class="bd2">'+x[2]+'</span><div class="mu">'+x[3]+'</div></div>'+(im.m==x[0]?ic('ck',18):(x[0]=='orion'&&!pro?ic('lk',18):''))+'</button>').join('');$('ihd').className='sw'+(im.hd?' on':'')}
+function imPick(m){$('imd').style.display='none';if(m=='orion'&&mode!='pro')return warn('Super Vision needs Pro. Earn 50 tokens and unlock Pro in Plan & usage.');im.m=m;imUI()}
+function imRef(el){const f=el.files[0];el.value='';if(!f)return;if(!/^image\//.test(f.type))return toast('Please choose an image file.');const r=new FileReader();r.onload=()=>{const i=new Image();i.onload=()=>{const k=Math.min(1,768/Math.max(i.width,i.height)),c=document.createElement('canvas');c.width=Math.round(i.width*k);c.height=Math.round(i.height*k);c.getContext('2d').drawImage(i,0,0,c.width,c.height);im.ref=c.toDataURL('image/jpeg',.8);imRefUI()};i.onerror=()=>toast('Could not read this image.');i.src=r.result};r.readAsDataURL(f)}
+function imRefUI(){if(!$('irf'))return;$('irf').style.display=im.ref?'block':'none';if(im.ref)$('iri').src=im.ref}
+function imRefX(){im.ref=null;imRefUI()}
+function imQ(a,b){if($('ist'))$('ist').textContent=a;if($('ilb'))$('ilb').textContent=b||''}
+async function imGen(){const p=$('ip').value.trim(),O=h=>{if($('io'))$('io').innerHTML=h};if(!p&&!im.ref)return toast('Please write a prompt.');if(igRun)return;if(im.m=='orion'&&mode!='pro')return warn('Super Vision needs Pro. Earn 50 tokens and unlock Pro in Plan & usage.');if(!IMG_URL)return warn('Image server is not connected yet. Paste your Worker URL in IMG_URL at the top of the file.');
+igRun=1;$('igb').disabled=true;O('<canvas id="ic" width="320" height="320" style="width:100%;height:100%"></canvas>');$('ifr').classList.remove('has');$('icl').style.display='none';let pr=0,done=0;const t0=Date.now(),L=[im.ref?'Reading your image':'Starting','Sketching your idea','Adding details','Finishing up'];
+(function fr(){const cv=$('ic');if(!cv||!igRun)return;const g=cv.getContext('2d'),t=(Date.now()-t0)/1000;pr=done&&t>=10?Math.min(100,pr+3):Math.max(pr,Math.min(92,92*(1-Math.exp(-t/5))));g.clearRect(0,0,320,320);const n=24,gp=320/n,F=pr/100*1.5;
+for(let i=0;i<n;i++)for(let j=0;j<n;j++){const u=i/(n-1),v=j/(n-1),s=Math.max(0,Math.min(1,(F-u)/.45)),vm=.5+.5*Math.sin(Math.PI*(.12+.76*v)),sh=.85+.15*Math.sin(t*2.4+i*.45+j*.3),r=Math.max(.7,gp*.46*s*vm*sh);g.fillStyle='rgba(16,163,127,'+(s>0?.35+.6*s:.22)+')';g.beginPath();g.arc(gp/2+i*gp,gp/2+j*gp,r,0,7);g.fill()}
+imQ(Math.round(pr)+'%',L[Math.min(3,Math.floor(pr/26))]);requestAnimationFrame(fr)})();
+try{let fp=p;if(im.ref){const dsc=(await ask([{role:'user',content:[{type:'text',text:'Describe this image for an image generator in under 70 words: subject, colors, style, composition, lighting. Output only the description.'},{type:'image_url',image_url:{url:im.ref}}]}],MODELS.vision,250)).replace(/<think>[\s\S]*?<\/think>/g,'').trim();fp=(p?p+'. ':'Recreate this in a fresh way. ')+'Reference image: '+dsc}fp=fp.slice(0,990);
+const st=im.m=='orion'?(im.hd?8:6):(im.hd?6:4);const r=await fetch(IMG_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({prompt:fp,steps:st})});const d=await r.json();if(d.error)throw new Error(d.error);if(!d.image)throw new Error('No image received.');im.src='data:image/jpeg;base64,'+d.image;im.fb=0;done=1;await new Promise(res=>{const w=setInterval(()=>{if(pr>=100||!$('ic')){clearInterval(w);res()}},40)});igRun=0;imQ('','');showImg()}catch(e){igRun=0;imQ('','');if(im.src)showImg();else O(IMH);warn('Image could not be created: '+(e.message=='Failed to fetch'?'Could not reach the server. Check your internet and the Worker URL.':e.message))}if($('igb'))$('igb').disabled=false}
+let zs={s:1,x:0,y:0},zp={},zd=0,zt=0;
+function zap(){const i=$('ifi');if(!i)return;const m=i.offsetWidth*(zs.s-1)/2,n=i.offsetHeight*(zs.s-1)/2;zs.x=Math.max(-m,Math.min(m,zs.x));zs.y=Math.max(-n,Math.min(n,zs.y));if(zs.s<=1){zs.x=0;zs.y=0}i.style.transform='translate('+zs.x+'px,'+zs.y+'px) scale('+zs.s+')'}
+function imFull(){if(!im.src)return;zs={s:1,x:0,y:0};zp={};let v=$('ifv');if(!v){v=document.createElement('div');v.id='ifv';document.body.appendChild(v)}
+v.style.cssText='position:fixed;inset:0;z-index:90;background:#000;display:flex;flex-direction:column';
+v.innerHTML='<div style="display:flex;justify-content:space-between;align-items:center;padding:calc(10px + env(safe-area-inset-top)) 14px 10px"><button onclick="imClose()" aria-label="Close">'+ic('cx',24)+'</button><span class="mu">Pinch or double tap to zoom</span><span style="width:24px"></span></div><div id="ifz" style="flex:1;overflow:hidden;touch-action:none;display:flex;align-items:center;justify-content:center"><img id="ifi" src="'+im.src+'" draggable="false" style="max-width:100%;max-height:100%;user-select:none;-webkit-user-drag:none"></div><div id="ifa"></div>';
+const z=$('ifz');z.onwheel=e=>{e.preventDefault();zs.s=Math.max(1,Math.min(5,zs.s*(e.deltaY<0?1.15:1/1.15)));zap()};
+z.onpointerdown=e=>{if(z.setPointerCapture)z.setPointerCapture(e.pointerId);zp[e.pointerId]=[e.clientX,e.clientY];const k=Object.keys(zp);if(k.length==2){const a=zp[k[0]],b=zp[k[1]];zd=Math.hypot(a[0]-b[0],a[1]-b[1]);zs.b=zs.s}else{const n=Date.now();if(n-zt<300){zs.s=zs.s>1?1:2.5;zap()}zt=n}};
+z.onpointermove=e=>{const o=zp[e.pointerId];if(!o)return;const k=Object.keys(zp);zp[e.pointerId]=[e.clientX,e.clientY];if(k.length==2){const a=zp[k[0]],b=zp[k[1]],d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(zd)zs.s=Math.max(1,Math.min(5,zs.b*d/zd))}else if(zs.s>1){zs.x+=e.clientX-o[0];zs.y+=e.clientY-o[1]}zap()};
+z.onpointerup=z.onpointercancel=e=>{delete zp[e.pointerId];zd=0};imAct()}
+function imAct(){const a=$('ifa');if(!a)return;const b=(i,l,f,on)=>'<button class="fa'+(on?' on':'')+'" onclick="'+f+'">'+ic(i,22)+'<span>'+l+'</span></button>';a.style.cssText='display:flex;justify-content:space-around;padding:10px 8px calc(14px + env(safe-area-inset-bottom))';a.innerHTML='<a class="fa" href="'+im.src+'" download="chatmax-image.jpg">'+ic('dl',22)+'<span>Download</span></a>'+b('sh','Share','imShare()',0)+b('up','Like','imFb(1)',im.fb==1)+b('dn','Dislike','imFb(-1)',im.fb==-1)}
+function imClose(){const v=$('ifv');if(v){v.style.display='none';v.innerHTML=''}}
+function imFb(v){im.fb=im.fb==v?0:v;if(im.fb){W('cm_imfb',(S('cm_imfb')||[]).slice(-49).concat([{v:im.fb,m:im.m,t:Date.now()}]));toast('Thanks for your feedback.')}imAct()}
+function imShare(){fetch(im.src).then(r=>r.blob()).then(b=>{const f=new File([b],'chatmax-image.jpg',{type:'image/jpeg'});if(navigator.canShare&&navigator.canShare({files:[f]}))return navigator.share({files:[f],title:'Chat Max image'});if(navigator.share)return navigator.share({title:'Chat Max image',text:'Image made with Chat Max'});toast('Sharing is not supported here. Use Download.')}).catch(e=>{if(!e||e.name!='AbortError')toast('Sharing is not supported here. Use Download.')})}
+function skillsPg(){pg('Skills',[['Email Writer','Write a clear, polite email about: '],['Study Notes','Make short study notes on: '],['Code Helper','Explain and fix this code: '],['Summarizer','Summarize this in simple points: ']].map(x=>'<div class="row" onclick="$(\'inp\').value=\''+x[1]+'\';closePg();dr(0);upd();$(\'inp\').focus()"><span>'+x[0]+'</span></div>').join(''))}
+function avt(a,z){const FH={VIRU:135,CHATUR:205,RUDRA:320,CHANAKYA:28};let h=FH[a.name.toUpperCase()];if(h==null){h=0;for(const c of a.name)h=(h*31+c.charCodeAt(0)*17)%360}return '<span class="avc" style="width:'+z+'px;height:'+z+'px;background:radial-gradient(circle at 35% 30%,hsl('+h+',75%,72%),hsl('+((h+40)%360)+',60%,45%))"></span>'}
+const INFO={about:['About Chat Max','Chat Max is an AI chat assistant built by Bhavy Patel at WE CODE. It helps you write, learn, code and understand images and files, with voice input and read aloud. Chat Max is currently in preview.'],privacy:['Privacy Policy','Your chats, agents and account details are stored on your own device. To generate a reply, your message and any image or file you attach is sent to our AI provider. Do not share passwords, bank details or other sensitive information in chats. You can delete your chats at any time from the chat menu.'],security:['Security','Chat Max is served over HTTPS and the AI key is kept on the server, never inside the app. Shared chat links contain the chat content itself, so share them only with people you trust.'],terms:['Terms & Regulations','Use Chat Max responsibly and lawfully. AI replies can be wrong, so check important information before you rely on it. Do not use Chat Max for harmful, illegal or abusive content. Daily usage limits apply and may change. By using Chat Max you agree to these terms.']};
+let abN=0,abT=0,devCode='';
+function abTap(){const n=Date.now();abN=(n-abT<1500?abN:0)+1;abT=n;if(abN>=7){abN=0;devAsk()}}
+function devAsk(){if(S('cm_dev'))return mdl('<h3>Blue Badge'+VB(18)+'</h3><p class="mu" style="margin:6px 0 14px">Your Blue Badge is active.</p><button class="pb g" onclick="mdx();devOff()">Remove badge</button><button class="pb" onclick="mdx()">OK</button>');
+mdl('<h3>Developer access</h3><p class="mu" style="margin:6px 0 12px">Enter the developer code.</p><input class="in" id="dcI" type="password" autocomplete="off" placeholder="Developer code"><button class="pb g" onclick="mdx()">Cancel</button><button class="pb" id="dcb" onclick="devVerify()">Verify</button>')}
+function devOff(){try{localStorage.removeItem('cm_dev');localStorage.removeItem('cm_dc')}catch(e){}me();toast('Blue Badge removed.')}
+async function devVerify(){const c=($('dcI').value||'').trim();if(!c)return toast('Please enter the code.');if(!SHARE_URL)return warn('Server is not connected.');$('dcb').disabled=true;try{await shr('/dev/check',{code:c});devCode=c;mdx();devCongrats()}catch(e){if($('dcb'))$('dcb').disabled=false;warn(e.message=='Invalid code.'?'This badge is only for the developer.':e.message=='Failed to fetch'?'Could not reach the server.':e.message)}}
+function devCongrats(){pg('Congratulations','<div class="card" style="text-align:center;padding:30px 18px"><div style="margin-bottom:12px">'+VB(72)+'</div><h2 style="margin:0 0 8px">Congratulations!</h2><p class="mu" style="margin-bottom:20px">You can get the Blue Badge for your Chat Max account. Do you want to take it?</p><button class="pb" style="width:100%;margin:0 0 10px" onclick="devYes()">Yes</button><button class="pb g" style="width:100%;margin:0" onclick="devNo()">No</button></div>');$('pg').classList.add('glow');pgPrev=null}
+function devYes(){W('cm_dev',1);W('cm_dc',devCode);devCode='';if(S('cm_dvon')==null)W('cm_dvon',1);closePg();me();
+if(!S('cm_dv7')){W('cm_dv7',1);const e=Math.max(Date.now(),S('cm_pe')||0)+7*864e5;W('cm_pe',e);mode='pro';save();mdl('<h3>Blue Badge added'+VB(18)+'</h3><p class="mu" style="margin:6px 0 14px">You also get 7 days of Pro. It expires on<br><b style="color:var(--tx)">'+fmtE(e)+'</b></p><button class="pb" onclick="mdx()">OK</button>')}else toast('Blue Badge added to your account.')}
+function devNo(){devCode='';closePg();toast('No badge added.')}
+function aboutPg(){pg('Chat Max','<div class="ab gl" onclick="abTap()">'+LOGO(68)+'<b>Chat Max</b><div class="mu">by WE CODE</div></div>'+bvCard()+[['about','About Chat Max'],['privacy','Privacy Policy'],['security','Security'],['terms','Terms & Regulations']].map(x=>'<div class="row" onclick="infoPg(\''+x[0]+'\')"><span>'+x[1]+'</span>'+ic('chv',20)+'</div>').join('')+(window.__ip?'<div class="row" onclick="instApp()"><span>Install app</span>'+ic('dl',20)+'</div>':''));$('pg').classList.add('glow')}
+function infoPg(k){pg(DOC[k][0],DOC[k][1].map(c=>'<div class="card">'+(c[0]?'<b>'+esc(c[0])+'</b>':'')+'<p class="inf" style="white-space:pre-line;margin-top:6px">'+esc(c[1])+'</p></div>').join(''));$('pg').classList.add('glow');pgPrev=aboutPg}
+const DOC={
+about:['About Chat Max',[['About Chat Max',`Chat Max is an AI-powered chat assistant developed by Bhavy Patel under the WE CODE name. It is designed to help users write, learn, code, solve problems, understand images and files, and interact with AI through a simple and modern interface.`],['Capabilities',`Chat Max supports multiple AI-powered capabilities, including text conversations, image understanding, file analysis, voice input, and read-aloud features, depending on the current version.`],['Built-in AI Agents',`Chatur — A Study & Knowledge AI Agent that explains difficult topics in simple language, solves academic questions step by step, and creates summaries and study guides.\n\nViru — A Coding & Development AI Agent that helps write, debug, explain and improve code and build websites, apps and games.\n\nChanakya (Pro) — A Research, Analysis & Strategy AI Agent that compares options, weighs risks and trade-offs, and gives well-reasoned recommendations.\n\nRudra (Pro) — An Advanced & Complex Tasks AI Agent for multi-step problems, detailed planning and advanced reasoning.`],['Our Aim',`Chat Max aims to make artificial intelligence accessible, useful, and easy to use for students, developers, creators, and everyday users.`],['Please Note',`AI-generated responses may contain mistakes or outdated information. Users should verify important information before relying on it.`],['Details',`Developer: Bhavy Patel\nProduct: Chat Max\nStatus: Preview / Development Edition`]]],
+privacy:['Privacy Policy',[[null,`Chat Max respects user privacy and is designed to give users control over their conversations and application settings.`],['1. Information You Provide',`When using Chat Max, users may provide text messages, images, files, voice input, and other information required to use available AI features.`],['2. AI Processing',`To generate AI responses, messages and supported attachments may be transmitted to the configured AI provider. The provider may process this information according to its own privacy practices and applicable policies.`],['3. Local Storage',`Depending on the current implementation, Chat Max may store chat history, preferences, agent settings, and other application information locally on the user's device.`],['4. Built-in AI Agents',`Conversations with the built-in agents (Chatur, Viru, Chanakya and Rudra) may be processed in the same way as other Chat Max AI conversations, depending on the features being used.`],['5. Files and Images',`Images and files uploaded for AI analysis may be transmitted to the configured AI provider to process the user's request.`],['6. Voice Features',`When voice input or read-aloud features are available, audio-related information may be processed by the browser or the service providing that functionality.`],['7. Sensitive Information',`Users should avoid submitting passwords, banking information, authentication codes, private keys, or other highly sensitive information.`],['8. Deleting Conversations',`If Chat Max provides a chat deletion option, users can delete available conversations through the chat interface. Locally stored information may also be removed by clearing application data or browser storage, depending on the implementation. Deleting local data does not necessarily delete information already processed or retained by an AI provider.`],['9. Policy Updates',`This Privacy Policy may be updated when Chat Max introduces new features, changes its data handling practices, or improves its services.`],['10. Privacy Reminder',`No online service can guarantee complete privacy or security. Users should review this policy and avoid submitting information they do not want processed by the configured AI services.`]]],
+security:['Security',[[null,`Chat Max is designed with security in mind and aims to protect user information through appropriate security practices.`],['1. Secure Connection',`Chat Max uses HTTPS when deployed through a properly configured secure web connection. HTTPS helps protect information during transmission between the user's browser and the server.`],['2. API Key Protection',`AI provider API credentials should be stored securely on the server and should never be exposed in the client-side application code.`],['3. Data Transmission',`Messages, images, and files may be transmitted to the configured AI provider to generate responses. Users should avoid submitting confidential or highly sensitive information.`],['4. Local Data Protection',`Depending on the current implementation, chat history, application preferences, and agent settings may be stored locally on the user's device.`],['5. Shared Conversations',`Shared chat links may contain or provide access to conversation content. Users should share these links only with people they trust.`],['6. Account Security',`Users should protect their passwords, authentication codes, API keys, and other private credentials. Never share sensitive credentials through AI conversations.`],['7. Security Improvements',`Chat Max may receive security updates, bug fixes, and infrastructure improvements as development continues.`],[null,`Although security is an important priority, no internet-connected service can guarantee absolute protection against every possible security risk.`]]],
+terms:['Terms & Regulations',[[null,`By using Chat Max, you agree to use the service responsibly, lawfully, and respectfully. Chat Max is an AI-powered service, and AI-generated responses may contain errors, incomplete information, or incorrect interpretations.`],['1. Acceptable Use',`Users must not use Chat Max to create illegal or harmful content, harass others, commit fraud, access systems without authorization, distribute malicious software, or violate applicable laws.`],['2. AI-Generated Content',`AI-generated responses are provided for informational and educational purposes. Users are responsible for reviewing important information before making decisions or taking action.`],['3. Built-in AI Agents',`The built-in agents (Chatur, Viru, Chanakya and Rudra) are AI assistants designed for study, coding, research and complex tasks. Their responses may contain errors and should not be treated as guaranteed professional advice.`],['4. Usage Limits',`Chat Max may apply daily message limits, file upload limits, image processing limits, or other restrictions. These limits may change as the service develops.`],['5. Service Availability',`Chat Max may introduce new features, modify existing features, perform maintenance, or temporarily suspend certain services.`],['6. User Responsibility',`Users are responsible for the information they submit and how they use AI-generated responses. Users must have permission to upload or share any content submitted to the service.`],['7. Changes to Terms',`These terms may be updated as Chat Max develops. Users should review the latest version periodically.`],[null,`By continuing to use Chat Max, you acknowledge and agree to these terms.`]]]};
+const PRE=[
+{id:'chatur',pre:1,name:'Chatur',desc:`Chatur is Chat Max's Study & Knowledge Agent. It explains difficult concepts in simple language, solves academic problems step by step, and creates summaries, notes and study guides.`,prompt:`You are Chatur, the Study & Knowledge AI Agent of Chat MAX.
+
+Your primary role is to help users learn, understand, and solve academic or knowledge-related problems clearly and accurately.
+
+Core abilities:
+
+- Explain difficult concepts in simple language.
+- Help with mathematics, science, programming fundamentals, languages, history, and general knowledge.
+- Solve academic problems step by step when appropriate.
+- Create summaries, notes, explanations, and study guides.
+- Help users understand why an answer is correct, not just provide the answer.
+- Adapt explanations to the user's apparent level of understanding.
+- Correct mistakes politely and explain the correct approach.
+
+Response style:
+
+- Clear, friendly, and easy to understand.
+- Prefer structured answers with headings, bullets, and steps when useful.
+- Avoid unnecessary complexity.
+- Never pretend to know something you do not know.
+- Prioritize accuracy over speed.
+
+You are a general-purpose study and knowledge assistant. For tasks outside your specialty, provide useful help when possible or clearly state the limitation.`},
+{id:'viru',pre:1,name:'Viru',desc:`Viru is Chat Max's Coding & Development Agent. It writes, debugs, explains and improves code, and helps you build websites, PWAs, apps, games and scripts.`,prompt:`You are Viru, the Coding & Development AI Agent of Chat MAX.
+
+Your primary role is to help users write, understand, debug, improve, and plan software.
+
+Core abilities:
+
+- Write clean and understandable code.
+- Debug errors and explain their causes.
+- Help build websites, PWAs, apps, games, scripts, and software projects.
+- Explain programming concepts from beginner to advanced levels.
+- Review and improve existing code.
+- Suggest practical architecture and implementation approaches.
+- Help with HTML, CSS, JavaScript, Python, SQL, and other commonly used technologies.
+- Provide complete code when the user needs an implementation.
+- Explain where code should be placed and how different parts work together.
+
+Response style:
+
+- Practical, precise, and developer-friendly.
+- Keep code readable and properly formatted.
+- Explain important changes without unnecessary theory.
+- Never invent APIs, libraries, or features.
+- When debugging, identify the likely cause before proposing the fix.
+- Prioritize secure, maintainable, and reliable solutions.
+
+You are the everyday coding assistant of Chat MAX and should make programming easier for users of different skill levels.`},
+{id:'chanakya',pre:1,pro:1,name:'Chanakya',desc:`Chanakya is Chat Max's Research, Analysis & Strategy Agent. It researches deeply, compares options, weighs risks and trade-offs, and gives clear, well-reasoned recommendations.`,prompt:`You are Chanakya, the Research, Analysis & Strategy AI Agent of Chat MAX.
+
+Your primary role is to perform deep research, analyze complex information, compare options, identify patterns, and help users make well-informed decisions.
+
+Core abilities:
+
+- Conduct thorough research when reliable information is available.
+- Break complex subjects into understandable parts.
+- Compare products, technologies, strategies, ideas, and alternatives using relevant criteria.
+- Analyze advantages, disadvantages, risks, opportunities, and trade-offs.
+- Identify important assumptions and missing information.
+- Synthesize information from multiple sources when available.
+- Distinguish facts from opinions, assumptions, and uncertainty.
+- Provide structured recommendations based on the user's stated goals and constraints.
+- Handle complex multi-step analytical tasks.
+
+Response style:
+
+- Intelligent, analytical, and structured.
+- Give reasoning and evidence for important conclusions.
+- Clearly separate verified facts from estimates or assumptions.
+- Avoid overconfidence when information is uncertain.
+- Focus on useful insights rather than unnecessary length.
+- When comparing options, use tables when they improve clarity.
+
+You are the deep-thinking research and strategy specialist of Chat MAX. Your goal is to turn complicated information into clear, actionable understanding.`},
+{id:'rudra',pre:1,pro:1,name:'Rudra',desc:`Rudra is Chat Max's Advanced & Complex Tasks Agent. It handles multi-step problems, complex planning and advanced reasoning, combining coding, research, math and writing when needed.`,prompt:`You are Rudra, the Advanced & Complex Tasks AI Agent of Chat MAX.
+
+Your primary role is to handle challenging reasoning, multi-step problems, complex planning, advanced analysis, and tasks that require combining multiple skills.
+
+Core abilities:
+
+- Solve difficult multi-step problems carefully.
+- Perform advanced reasoning and logical analysis.
+- Break large tasks into smaller, manageable stages.
+- Create detailed plans, workflows, architectures, and strategies.
+- Combine coding, research, mathematics, writing, analysis, and planning when a task requires multiple capabilities.
+- Identify contradictions, edge cases, risks, and hidden requirements.
+- Review proposed solutions and improve them.
+- Provide robust solutions rather than superficial answers.
+- Clearly state assumptions and limitations.
+
+Response style:
+
+- Precise, logical, and highly capable.
+- Think through complex problems before answering.
+- Use structured steps for complicated tasks.
+- Verify calculations and reasoning where possible.
+- Avoid making unsupported claims.
+- Prefer practical and reliable solutions over unnecessarily complicated ones.
+
+You are the advanced problem-solving specialist of Chat MAX. When a task is difficult or requires multiple capabilities, approach it systematically and deliver the strongest practical solution possible.`}];
+const AGM={vorix:'viru',nexa:'chatur',lyra:'rudra',zeno:'chanakya'},AG=id=>{id=AGM[id]||id;return PRE.concat(agents).find(a=>a.id==id)};
+function usr(){const p=S('cm_p');return p&&p.name?" The user you are talking to is named "+p.name+". Address them by this name when natural. They are NOT the developer unless they say so.":" You do not know the user's name; never guess it."}
+function kbCtx(){return kb.length?" KNOWLEDGE BASE (facts the user taught you; use when relevant):\n"+kb.map(k=>'['+k.name+'] '+k.desc+' '+k.files.map(f=>f.x.slice(0,1500)).join(' ')).join('\n').slice(0,4000):''}
+let agTab='all';
+function agentsPg(){pg('Agents','<div class="seg"><button class="'+(agTab=='all'?'on':'')+'" onclick="agTab=\'all\';agentsPg()">All</button><button class="'+(agTab=='my'?'on':'')+'" onclick="agTab=\'my\';agentsPg()">My agents</button></div><input class="in" placeholder="Search agents" oninput="agList(this.value)"><button class="pb" onclick="agentForm()">+ Create agent</button><div id="al"></div>');agList('')}
+function agList(f){const q=f.toLowerCase(),l=(agTab=='all'?PRE.concat(agents):agents).filter(a=>a.name.toLowerCase().includes(q));$('al').innerHTML=l.length?l.map(a=>'<div class="row"><div onclick="useAgent(\''+a.id+'\')" style="flex:1;display:flex;gap:14px;align-items:center">'+avt(a,52)+'<div><b>'+esc(a.name)+(a.pro?'<span class="bd2">Pro</span>':'')+'</b><div class="mu">'+esc(a.desc.slice(0,60))+'...</div></div></div>'+(a.pre?'':'<button onclick="delAgent('+a.id+')">'+ic('dots')+'</button>')+'</div>').join(''):'<p class="mu" style="margin-top:20px">No agents yet. Tap + to create your first agent.</p>'}
+function agentForm(){setTimeout(()=>{if($('ttl2').textContent=='Create an agent')pgPrev=agentsPg},0);if(agents.length>=OWN[mode])return warn('You can create up to '+OWN[mode]+' agents. Delete one to create a new agent.');pg('Create an agent','<label>Name</label><input class="in" id="an" placeholder="My agent"><label>Description</label><textarea class="in" id="ad" rows="4" placeholder="Anything specific you want your agent to do?"></textarea><button class="pb g" onclick="agentsPg()">Cancel</button><button class="pb" onclick="build()">Create</button>')}
+async function build(){const n=$('an').value.trim(),d=$('ad').value.trim();if(!n||!d)return warn('Add a name and a description.');
+pg('Building agent','<div style="margin-top:30px"><div class="tr"><i id="bp" style="width:0;background:var(--ac)"></i></div><p class="st" id="bs" style="margin-top:14px">Building '+esc(n)+'...</p><div id="bl" class="inf" style="white-space:pre-wrap;word-break:break-word"></div></div>');
+const BT=['Reading your request and understanding what '+n+' should do.','Task summary: '+d.slice(0,160)+'.','Designing the personality, tone and working style of '+n+'.','Writing detailed instructions so '+n+' stays focused on your tasks.','Adding rules for clear, accurate and friendly answers in the language the user writes in.','Testing '+n+' with sample questions and checking the quality of its replies.','Polishing the final instructions and getting '+n+' ready for you...'],BF=BT.join('\n\n'),bst=Math.ceil(BF.length/900);let bi=0;const iv=setInterval(()=>{bi=Math.min(BF.length,bi+bst);const e=$('bl');if(e)e.textContent=BF.slice(0,bi)+(bi<BF.length?'\u258c':'')},30);
+setTimeout(()=>{if($('bp')){$('bp').style.transition='width 30s linear';$('bp').style.width='100%'}},60);const t0=Date.now();
+try{const p=await ask([{role:'system',content:'You write system prompts for AI agents. Output only the prompt, max 120 words.'},{role:'user',content:'Agent name: '+n+'\nTasks: '+d}],MODELS[mode],500,null),id=Date.now();
+await new Promise(r=>setTimeout(r,Math.max(0,30000-(Date.now()-t0))));clearInterval(iv);agents.push({id,name:n,desc:d,prompt:p});save();
+pg('Agent ready','<h3>'+esc(n)+'</h3><p class="mu" style="margin:8px 0 14px">'+esc(p)+'</p><button class="pb" onclick="useAgent('+id+')">Open agent</button><button class="pb g" onclick="agentsPg()">Done</button>')}catch(e){clearInterval(iv);warn('Could not build the agent: '+e.message);agentsPg()}}
+function delAgent(id){conf('Delete this agent?',()=>{agents=agents.filter(a=>a.id!=id);save();agentsPg()})}
+function useAgent(id){const a=AG(id);if(!a)return;if(a.pro&&mode!='pro')return mdl('<h3>'+esc(a.name)+' is a Pro agent</h3><p class="mu" style="margin-bottom:14px">Switch to Pro to use '+esc(a.name)+'.</p><button class="pb g" onclick="mdx()">Close</button><button class="pb" onclick="mdx();planPg()">See plans</button>');closePg();dr(0);curId=null;pend=a.id;render()}
+function bar(l,u,t){const p=Math.min(100,u/t*100),c=p<60?'var(--ac)':p<85?'#e0a100':'#e5484d';return '<div class="ub"><div class="r"><b>'+l+'</b><span>'+u+' / '+t+'</span></div><div class="tr"><i style="width:'+p+'%;background:'+c+'"></i></div><div class="r s"><span>Used '+u+'</span><span>Left '+(t-u)+'</span><span>Total '+t+'</span></div></div>'}
+let co=S('cm_co')||{c:0,e:0,tok:0,d:{}},plT='plans';
+const dk=o=>new Date(Date.now()-o*864e5).toDateString();
+function coinAdd(){const n=S('cm_dev')?5:1;co.c+=n;co.e+=n;co.d[dk(0)]=(co.d[dk(0)]||0)+n;W('cm_co',co)}
+const TIERS=[[10,1,'1 day'],[25,7,'7 days'],[50,30,'30 days']];
+function proOn(){return(S('cm_pe')||0)>Date.now()}
+function fmtE(t){const d=new Date(t);return d.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'short',year:'numeric'})+', '+d.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'})}
+function proChk(){if(mode=='pro'&&!proOn()){mode='free';save();if(typeof im!='undefined'&&im.m=='orion')im.m='core';if($('imn'))imUI();mdl('<h3>Pro plan expired</h3><p class="mu" style="margin-bottom:14px">Your Pro plan has ended and you are back on Free. You can unlock Pro again in Plan & usage, under Unlock.</p><button class="pb" onclick="mdx()">OK</button>')}}
+function selPlan(m){if(m=='free'){mode='free';save();toast('Free plan active.');return planPg()}
+if(proOn()){mode='pro';save();toast('Pro plan active.');return planPg()}
+plT='coll';toast('Choose how long to unlock Pro.');planPg()}
+function claimP(i){const T=TIERS[i];if(co.tok<T[0])return mdl('<h3>Not enough tokens</h3><p class="mu" style="margin-bottom:14px">You need '+T[0]+' tokens for '+T[2]+' of Pro. You have '+co.tok+'. Earn coins in Free mode and convert them to tokens here.</p><button class="pb" onclick="mdx()">OK</button>');
+mdl('<h3>Unlock Pro for '+T[2]+'?</h3><p class="mu" style="margin-bottom:14px">This will use '+T[0]+' tokens.'+(proOn()?' The new time is added to your current Pro plan.':'')+'</p><button class="pb g" onclick="mdx()">Cancel</button><button class="pb" onclick="mdx();doClaim('+i+')">Claim</button>')}
+function doClaim(i){const T=TIERS[i];if(co.tok<T[0])return;co.tok-=T[0];W('cm_co',co);const e=Math.max(Date.now(),S('cm_pe')||0)+T[1]*864e5;W('cm_pe',e);mode='pro';save();planPg();mdl('<h3>Pro unlocked</h3><p>Pro mode is now active.</p><p class="mu" style="margin:8px 0 14px">This plan expires on<br><b style="color:var(--tx)">'+fmtE(e)+'</b></p><button class="pb" onclick="mdx()">OK</button>')}
+function convC(){if(co.c<10)return toast('You need at least 10 coins.');co.c-=10;co.tok++;W('cm_co',co);toast('Converted 10 coins to 1 token.');planPg()}
+function acctPg(){const p=S('cm_p')||{};pg('Account','<div class="card" style="text-align:center"><div class="av" style="margin:0 auto 10px;width:64px;height:64px;font-size:26px">'+esc((p.name||'G')[0].toUpperCase())+'</div><b style="font-size:19px">'+nmB(p.name||'Guest',18,1,0)+'</b><div class="mu">'+(p.country?esc(p.country):'No account details yet')+'</div></div><button class="pb" onclick="acctForm()">'+(p.name?'Edit account info':'Create your account')+'</button>')}
+function planPg(){const F=['Lighter, faster AI model','Standard length replies','AI agents: Chatur and Viru, plus create 2 of your own','Image model: Vision','3 knowledge bases','Basic Code Assistant checks'],P=['Bigger, smarter AI model','Longer, more detailed replies','4 AI agents: Chatur, Viru, Chanakya and Rudra, plus create 5 of your own','Image models: Vision and Super Vision (HD)','10 knowledge bases','Detailed Code Assistant with fixes'],tab=(i,t)=>'<button class="'+(plT==i?'on':'')+'" onclick="plT=\''+i+'\';planPg()">'+t+'</button>',on_=proOn(),ex=S('cm_pe')||0,
+box=(m,t,l,on,sub)=>'<div class="card" onclick="selPlan(\''+m+'\')" style="cursor:pointer;'+(on?'border:1px solid var(--ac)':'')+'"><b>'+t+(on?' \u00b7 Current plan':'')+'</b>'+(sub?'<div style="color:var(--ac);margin-top:4px">'+sub+'</div>':'')+'<p class="inf" style="white-space:pre-line">'+l.map(x=>'\u2022 '+x).join('\n')+'</p></div>';
+let h='<div class="seg">'+tab('plans','Plans')+tab('coll','Unlock')+'</div>';
+if(plT=='plans')h+=box('free','Free',F,mode=='free','')+box('pro','Pro',P,mode=='pro',on_?'Pro active until '+fmtE(ex):'Claim tokens to Unlock Pro Mode');
+else h+='<div class="card" style="text-align:center"><div class="mu">Coins earned</div><div style="font-size:44px;font-weight:800;color:var(--ac)">'+co.c+'</div><div class="r s"><span>Today '+(co.d[dk(0)]||0)+'</span><span>Yesterday '+(co.d[dk(1)]||0)+'</span><span>Total '+co.e+'</span></div></div><div class="card"><div class="r"><b>Tokens</b><b>'+co.tok+'</b></div><p class="mu" style="margin:8px 0 12px">Earn '+(S('cm_dev')?'5 coins':'1 coin')+' for every message in Free mode. 10 coins = 1 token.</p><button class="pb" style="width:100%" onclick="convC()">Convert 10 Coins to 1 token</button></div>'+(on_?'<div class="card"><b>Pro is active</b><div class="mu" style="margin-top:4px">Expires on '+fmtE(ex)+'</div></div>':'')+TIERS.map((T,i)=>'<div class="card r"><div><b>Unlock Pro for '+T[2]+'</b><div class="mu">Give '+T[0]+' tokens</div></div><button class="pb" onclick="claimP('+i+')">Claim</button></div>').join('');
+pg('Plan & usage',h)}
+const ago=t=>{const m=(Date.now()-t)/6e4;return m<1?'Now':m<60?Math.floor(m)+' min ago':m<1440?Math.floor(m/60)+' hr ago':new Date(t).toLocaleDateString()};
+let tmpF=[];
+const KS=[
+{id:'s1',name:'Photosynthesis',by:'Aarav',ago:'2 days ago',desc:'Photosynthesis is how green plants make food using sunlight, water and carbon dioxide. It happens in the chloroplasts, where chlorophyll captures light energy. The result is glucose and oxygen, which humans and animals need to breathe.'},
+{id:'s2',name:"Newton's Laws",by:'Diya',ago:'3 days ago',desc:'First law: an object stays at rest or in motion unless a force acts on it. Second law: force equals mass times acceleration. Third law: every action has an equal and opposite reaction.'},
+{id:'s3',name:'Python Basics',by:'Rohan',ago:'4 days ago',desc:'Python is a beginner friendly language. Variables store data, if/else makes decisions, loops repeat tasks and functions group code you can reuse. Indentation is very important in Python.'},
+{id:'s4',name:'Indian Constitution',by:'Meera',ago:'5 days ago',desc:'The Constitution of India came into effect on 26 January 1950. It gives citizens fundamental rights, lists directive principles and sets how the government works.'},
+{id:'s5',name:'Basics of Electricity',by:'Ananya',ago:'1 week ago',desc:'Electric current is the flow of charge. Voltage pushes the current and resistance slows it down. Ohm\'s law connects them: V = I x R.'},
+{id:'s6',name:'Study Tips',by:'Kabir',ago:'1 week ago',desc:'Padhai karte time har 45 minute baad 10 minute ka break lo. Pehle mushkil subject padho, phir easy wala. Phone dur rakho aur raat ko revision zarur karo, isse sab yaad rehta hai.'},
+{id:'s7',name:'Cricket Rules',by:'Vihaan',ago:'2 weeks ago',desc:'Cricket me 11 players ki 2 teams hoti hain. T20 me har team 20 over khelti hai aur ODI me 50 over. Chat Max ko ye samjhana hai ki batsman out kaise hota hai: bowled, catch, LBW aur run out.'}];
+let kbT='all';
+const kav=n=>'<span class="av" style="width:26px;height:26px;font-size:12px;background:hsl('+([...n].reduce((a,c)=>a+c.charCodeAt(0),0)*37%360)+',55%,38%)">'+esc(n[0].toUpperCase())+'</span>';
+const kq=()=>($('kq')||{}).value||'';
+let kbSv=[],kbOff=0,kbVis=0,kbMy=S('cm_kbv')||{},kv=null;
+async function shr(path,body){const r=await fetch(SHARE_URL+path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:{});const d=await r.json();if(d.error)throw new Error(d.error);return d}
+function kbPg(){const t=(i,l)=>'<button class="'+(kbT==i?'on':'')+'" onclick="kbT=\''+i+'\';kbPg()">'+l+'</button>';pg('Knowledge base','<input class="in" id="kq" placeholder="Search knowledge bases" oninput="kbList(this.value)"><div class="seg">'+t('all','All')+t('mine','Created by me')+'</div><div id="kl"></div>',kbForm);if(kbT=='all'&&SHARE_URL&&!kbOff)kbLoad();else kbList('')}
+async function kbLoad(){if($('kl'))$('kl').innerHTML='<div class="mu" style="text-align:center;margin-top:30px">Loading...</div>';try{kbSv=(await shr('/kb')).items||[]}catch(e){kbOff=1;toast('Shared knowledge server is not connected yet. Showing demo items.')}if($('kl'))kbList(kq())}
+const bdg=(k,m)=>(m?S('cm_dev'):k.dv)?VB(14):'';
+const kbSrv=x=>({id:x.key,dv:x.dv,key:x.key,name:x.name,desc:x.p,by:x.by,uid:x.u,t:x.t,l:x.l||0,d:x.d||0,srv:1});
+function kbItems(){if(kbT=='mine')return kb;if(SHARE_URL&&!kbOff)return kbSv.map(kbSrv);return kb.filter(k=>k.pub).concat(KS)}
+function kbList(f){const q=(f||'').toLowerCase(),nm=(S('cm_p')||{}).name||'You',own=kbT=='mine',l=kbItems().filter(k=>(k.name+' '+k.desc).toLowerCase().includes(q));
+$('kl').innerHTML=l.length?l.map(k=>{const m=typeof k.id=='number',by=m?nm:k.by,cn=k.srv?'<span class="kcn">'+ic('up',14)+k.l+'</span><span class="kcn">'+ic('dn',14)+k.d+'</span>':'';return '<div class="card kc" style="cursor:pointer" onclick="kbView(\''+k.id+'\')"><div class="r"><b>'+esc(k.name)+'<span class="bd2">'+(m&&!k.pub?'Private':'Public')+'</span></b>'+(m?'<button onclick="event.stopPropagation();kbMenu('+k.id+')">'+ic('dots',20)+'</button>':'')+'</div><div class="mu" style="margin-top:6px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">'+esc(k.desc||'No detail added')+'</div><div class="mu" style="display:flex;align-items:center;gap:8px;margin-top:10px;font-size:13px">'+kav(by)+'<span>'+nmB(by,14,m,k.dv)+' \u00b7 '+(k.ago||ago(k.t))+'</span><span style="margin-left:auto;display:flex;gap:10px">'+cn+'</span></div></div>'}).join(''):'<div class="emp"><b>'+(own?'Nothing created yet.':'No knowledge found.')+'</b><div class="mu">'+(own?'Tap + to add a topic for Chat Max to learn.':'Be the first to publish one.')+'</div></div>'}
+async function kbView(id){const x=kbSv.find(y=>y.key==id),k=[...kb,...KS].find(y=>String(y.id)==id)||(x&&kbSrv(x));if(!k)return;kv={k:Object.assign({},k),l:k.l||0,d:k.d||0,my:(typeof k.id=='string'&&!k.srv)?(kbMy[k.id]||0):0,full:k.desc||''};kvDraw();
+if(SHARE_URL&&!kbOff&&k.key){try{const r=await shr('/kb/get',{key:k.key,uid:UID});if(kv&&kv.k.key==k.key){kv.full=r.desc;kv.l=r.l;kv.d=r.d;kv.my=r.my;kvDraw()}}catch(e){}}}
+function kvDraw(){const k=kv.k,m=typeof k.id=='number',nm=m?((S('cm_p')||{}).name||'You'):k.by,rc=!(m&&!k.pub);pg('Knowledge','<div class="card"><h3 style="margin:0 0 4px">'+esc(k.name)+'<span class="bd2">'+(m&&!k.pub?'Private':'Public')+'</span></h3><div class="mu" style="display:flex;align-items:center;gap:8px;margin:8px 0 14px;font-size:13px">'+kav(nm)+'<span>'+nmB(nm,14,m,k.dv)+' \u00b7 '+(k.ago||ago(k.t))+'</span></div><div style="white-space:pre-wrap;word-break:break-word;line-height:1.6">'+esc(kv.full||'No detail added')+'</div>'+(k.files&&k.files.length?'<div style="margin-top:14px">'+k.files.map(x=>'<span class="ch">'+esc(x.n)+'</span> ').join('')+'</div>':'')+'</div>'+(rc?'<div class="card r"><span class="mu">Was this helpful?</span><span style="display:flex;gap:10px"><button class="fa'+(kv.my==1?' on':'')+'" onclick="kbReact(1)">'+ic('up',20)+'<span>'+kv.l+'</span></button><button class="fa'+(kv.my==-1?' on':'')+'" onclick="kbReact(-1)">'+ic('dn',20)+'<span>'+kv.d+'</span></button></span></div>':''));pgPrev=kbPg}
+async function kbReact(v){const k=kv.k;if(SHARE_URL&&!kbOff&&k.key){try{const r=await shr('/kb/vote',{key:k.key,uid:UID,v});kv.l=r.l;kv.d=r.d;kv.my=r.my}catch(e){return toast('Could not save. Try again.')}}else{const o=kv.my;kv.my=o==v?0:v;kv.l+=(kv.my==1?1:0)-(o==1?1:0);kv.d+=(kv.my==-1?1:0)-(o==-1?1:0);if(typeof k.id=='string')W('cm_kbv',Object.assign(kbMy,{[k.id]:kv.my}))}kvDraw()}
+async function kbPublish(k){if(!SHARE_URL||kbOff){k.pub=true;save();return true}try{const r=await shr('/kb/pub',{key:k.key||null,uid:UID,dc:dvOn()?(S('cm_dc')||''):'',name:k.name,desc:k.desc,by:(S('cm_p')||{}).name||'User'});k.key=r.key;k.pub=true;save();return true}catch(e){warn('Could not publish: '+e.message);return false}}
+async function kbUnpub(k){if(SHARE_URL&&!kbOff&&k.key){try{await shr('/kb/del',{key:k.key,uid:UID})}catch(e){warn('Could not make it private: '+e.message);return false}}k.pub=false;k.key=null;save();return true}
+async function kbPub(id){const k=kb.find(x=>x.id==id);if(!k)return;const ok=k.pub?await kbUnpub(k):await kbPublish(k);if(ok){toast(k.pub?'Published. Everyone can read it in All.':'Now private.');if($('kl'))kbList(kq())}}
+function kbMenu(id){const k=kb.find(x=>x.id==id);if(!k)return;const b='class="pb g" style="width:100%;margin:0 0 8px" ';mdl('<h3>'+esc(k.name)+'</h3><button '+b+'onclick="mdx();kbForm('+id+')">Edit</button><button '+b+'onclick="mdx();kbPub('+id+')">'+(k.pub?'Make private':'Publish')+'</button><button '+b.replace('style="','style="color:#e5484d;')+'onclick="mdx();delKb('+id+')">Delete</button>')}
+function kfs(){if($('kf'))$('kf').innerHTML=tmpF.map(x=>'<span class="ch">'+esc(x.n)+'</span> ').join('')}
+function kvUI(){if($('kvs'))$('kvs').innerHTML='<button class="'+(kbVis?'':'on')+'" onclick="kbVis=0;kvUI()">Private</button><button class="'+(kbVis?'on':'')+'" onclick="kbVis=1;kvUI()">Publish</button>';if($('kvh'))$('kvh').textContent=kbVis?'Everyone using Chat Max can read this.':'Only you can see this.'}
+function kbForm(eid){const e=typeof eid=='number'?kb.find(k=>k.id==eid):null;if(!e&&kb.length>=KBL[mode])return warn(mode=='free'?'Free plan allows up to 3 knowledge bases. Switch to Pro for 10.':'You can have up to 10 knowledge bases.');tmpF=e?e.files.slice():[];kbVis=e&&e.pub?1:0;
+mdl('<h3>'+(e?'Edit knowledge':'New knowledge')+'</h3><label>Topic</label><input class="in" id="kn" value="'+esc(e?e.name:'')+'"><label>Detail About Topic</label><textarea class="in" id="kd" rows="5">'+esc(e?e.desc:'')+'</textarea><label>Visibility</label><div class="seg" id="kvs"></div><p class="mu" id="kvh" style="font-size:13px;margin:2px 0 10px"></p><button class="pb g" style="width:100%;margin:0 0 6px" onclick="$(\'f4\').click()">+ Add files</button><div id="kf"></div><p class="mu" style="font-size:13px;margin:6px 0 12px">Files are optional and stay on your device. Chat Max learns from your text and files.</p><button class="pb g" onclick="mdx()">Cancel</button><button class="pb" onclick="kbSave('+(e?e.id:0)+')">'+(e?'Save':'Create')+'</button>');kfs();kvUI()}
+function kbFiles(el){[...el.files].forEach(f=>{if(f.size>200000||!/\.(txt|md|csv|json|js|html|css|py|java|c|cpp|xml|log)$/i.test(f.name))return toast('Unsupported file. Use txt, code, csv or json (max 200 KB).');const r=new FileReader();r.onload=()=>{tmpF.push({n:f.name,x:r.result});if($('kf'))$('kf').innerHTML=tmpF.map(x=>'<span class="ch">'+esc(x.n)+'</span> ').join('')};r.readAsText(f)});el.value=''}
+async function kbSave(eid){const n=$('kn').value.trim();if(!n)return toast('Please enter a topic.');const d=$('kd').value.trim();let e=eid?kb.find(k=>k.id==eid):null;if(e){e.name=n;e.desc=d;e.files=tmpF;e.t=Date.now()}else{e={id:Date.now(),name:n,desc:d,files:tmpF,t:Date.now(),pub:false};kb.unshift(e)}save();mdx();if(kbVis)await kbPublish(e);else if(e.pub)await kbUnpub(e);if(eid)kbList(kq());else{kbT='mine';kbPg()}}
+function delKb(id){conf('Delete this knowledge base?',async()=>{const k=kb.find(x=>x.id==id);if(k&&k.key&&SHARE_URL&&!kbOff){try{await shr('/kb/del',{key:k.key,uid:UID})}catch(e){}}kb=kb.filter(x=>x.id!=id);save();kbList('')})}
+const CON=[['gcal','Google Calendar','Productivity','Schedule and manage events and meetings.','#4285f4'],['gdoc','Google Docs','Productivity','Create, read and edit Google documents.','#1a73e8'],['gdrv','Google Drive','Data','Cloud storage for uploading and sharing files.','#0f9d58'],['gsht','Google Sheets','Data','Cloud-based spreadsheets and data tools.','#188038'],['gsld','Google Slides','Productivity','Create, read and edit presentations.','#f4b400'],['gtsk','Google Tasks','Productivity','Create, organize and complete tasks.','#4285f4'],['gml','Gmail','Communication','Read, search and draft emails.','#ea4335'],['slk','Slack','Communication','Team messaging and channels.','#4a154b'],['ntn','Notion','Productivity','Notes, docs and wikis in one place.','#444'],['gh','GitHub','Engineering','Repositories, issues and pull requests.','#24292f'],['jra','Jira','Engineering','Project and issue tracking.','#0052cc'],['trl','Trello','Productivity','Boards and cards for team work.','#0079bf'],['air','Airtable','Data','A spreadsheet-database for your data.','#18bfff'],['hub','HubSpot','Sales','CRM for contacts and deals.','#ff7a59'],['sfd','Salesforce','Sales','CRM and sales pipeline tools.','#00a1e0']];
+let cq='',ccat='All';
+function connPg(){pg('Connectors','<input class="in" placeholder="Search connectors" value="'+esc(cq)+'" oninput="cq=this.value;connList()"><div class="cpr">'+['All','Productivity','Data','Sales','Engineering','Communication'].map(c=>'<button class="'+(c==ccat?'on':'')+'" onclick="ccat=\''+c+'\';connPg()">'+c+'</button>').join('')+'</div><div id="cl2"></div>');connList()}
+function connList(){$('cl2').innerHTML=CON.filter(c=>(ccat=='All'||c[2]==ccat)&&c[1].toLowerCase().includes(cq.toLowerCase())).map(c=>{const on=cn.includes(c[0]);return '<div class="cnr"><div class="b" style="background:'+c[4]+'">'+c[1].split(' ').map(w=>w[0]).join('').slice(0,2)+'</div><div class="t"><b>'+c[1]+'</b><div class="mu">'+c[3]+'</div></div>'+(on?'<button onclick="disC(\''+c[0]+'\')">'+ic('dots',20)+'</button><button class="cb on">Connected</button>':'<button class="cb" onclick="conC(\''+c[0]+'\')">Connect</button>')+'</div>'}).join('')||'<p class="mu">No connectors found.</p>'}
+function conC(id){cn.push(id);save();connList();toast(CON.find(c=>c[0]==id)[1]+' connected')}
+function disC(id){const n=CON.find(c=>c[0]==id)[1];window._dc=()=>{cn=cn.filter(x=>x!=id);save();connList();toast(n+' disconnected')};mdl('<h3>Disconnect '+n+'?</h3><button class="pb g" onclick="mdx()">Cancel</button><button class="pb" onclick="mdx();_dc()">Disconnect</button>')}
+function lnUpd(){const n=Math.max(10,$('cc').value.split('\n').length);$('ln').textContent=Array.from({length:n},(_,i)=>i+1).join('\n');$('ln').scrollTop=$('cc').scrollTop}
+function codePg(){pg('Code Assistant','<p class="mu" style="margin-bottom:10px">Verify your code and get complete analysis</p><div class="card" style="margin:0 0 12px"><b>Paste Your Code Here</b><div class="ed" style="margin:10px 0"><div id="ln"></div><textarea id="cc" placeholder="// Paste your code here..." oninput="lnUpd()" onscroll="$(\'ln\').scrollTop=this.scrollTop" spellcheck="false"></textarea></div><div style="display:flex;gap:10px"><button class="pb" id="vb" style="flex:1;margin:0" onclick="verify()">Verify</button><button class="pb g" style="flex:1;margin:0;border:1px solid var(--ac)" onclick="codeClear()">Clear</button></div></div><div class="gd">'+[['lg','Language','Detected language'],['tl','Total Lines','Total code lines'],['df','Difficulty','Easy / Medium / Hard'],['te','Total Errors','Number of errors'],['el','Error Lines','Lines with errors'],['cs','Code Status','Overall result']].map(x=>'<div class="gc"><small>'+x[1]+'</small><b id="r_'+x[0]+'">-</b><small>'+x[2]+'</small></div>').join('')+'</div><div class="card"><b>Error Details</b><div id="ed" class="mu" style="margin-top:8px">No errors to show. Run verification to see detailed errors.</div></div><div class="card"><b>Tip</b><p class="mu">Paste your code and tap Verify to check language, lines, difficulty, errors and detailed error information.</p></div>');lnUpd()}
+function codeClear(){$('cc').value='';lnUpd();['lg','tl','df','te','el','cs'].forEach(k=>$('r_'+k).textContent='-');$('ed').innerHTML='No errors to show. Run verification to see detailed errors.'}
+async function verify(){const code=$('cc').value;if(!code.trim())return warn('Please paste some code first.');const lines=code.split('\n'),b=$('vb'),pro=mode=='pro';b.disabled=true;b.textContent='Checking...';const v0=Date.now();$('r_tl').textContent=lines.length;
+try{const num=lines.slice(0,400).map((l,i)=>(i+1)+': '+l).join('\n').slice(0,14000);
+const raw=await ask([{role:'system',content:'You are a strict code reviewer. Reply ONLY with JSON: {"language":string,"difficulty":"Easy|Medium|Hard","quality":"Poor|Fair|Good|Excellent","status":"Has errors|Needs improvement|Looks good","errors":[{"line":number,"message":string'+(pro?',"fix":string':'')+'}],"summary":string}. Line numbers refer to the numbered input lines. Report only real syntax, logic or runtime errors. '+(pro?'Explain each error clearly, give a fix, and a two sentence summary.':'Keep messages short.')},{role:'user',content:num}],MODELS[mode],pro?1500:900);
+await new Promise(r=>setTimeout(r,Math.max(0,10000-(Date.now()-v0))));const j=JSON.parse(raw.slice(raw.indexOf('{'),raw.lastIndexOf('}')+1)),er=j.errors||[];
+$('r_lg').textContent=j.language||'-';$('r_df').textContent=j.difficulty||'-';$('r_te').textContent=er.length;$('r_el').textContent=er.length?er.map(e=>e.line).join(', '):'None';$('r_cs').textContent=(j.status||'-')+(j.quality?' · '+j.quality:'');
+$('ed').innerHTML=er.length?er.map(e=>'<div style="border:1px solid var(--bd);border-radius:12px;padding:10px;margin-top:8px;color:var(--tx)"><b style="color:#e5484d">Line '+esc(String(e.line))+'</b><div>'+esc(e.message||'')+'</div>'+(e.fix?'<div class="mu" style="margin-top:4px">Fix: '+esc(e.fix)+'</div>':'')+'</div>').join('')+(j.summary?'<p style="margin-top:10px">'+esc(j.summary)+'</p>':''):'No errors found. '+esc(j.summary||'')}catch(e){warn('Could not analyse the code. Please try again.')}
+if($('vb')){$('vb').disabled=false;$('vb').textContent='Verify'}}
+
+document.addEventListener('keydown',e=>{if(e.key!='Enter'||e.shiftKey||e.isComposing||!matchMedia('(min-width:900px)').matches)return;const t=e.target,tn=t.tagName;if(tn=='BUTTON'||tn=='A')return;
+if($('md').classList.contains('on')){if(tn=='TEXTAREA')return;const b=[...document.querySelectorAll('#mb .pb:not(.g)')].pop();if(b){e.preventDefault();b.click()}return}
+if(t.id=='ip'){e.preventDefault();imGen();return}
+if(t.id=='inp'){e.preventDefault();if(!busy&&($('inp').value.trim()||att))send();return}
+if($('pg').classList.contains('on')&&tn=='INPUT'){const b=document.querySelector('#pgb .pb:not(.g)');if(b){e.preventDefault();b.click()}}});
+document.addEventListener('keydown',e=>{const v=$('ifv');if(e.key=='Escape'&&v&&v.style.display=='flex')imClose()});
+window.__ip=null;window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();window.__ip=e});window.addEventListener('appinstalled',()=>{window.__ip=null});
+async function instApp(){const e=window.__ip;if(!e)return toast('Open the browser menu and tap Install app or Add to Home screen.');e.prompt();try{await e.userChoice}catch(x){}window.__ip=null}
+init();loadShared();
+</script>
+<script>if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){window.addEventListener('load',function(){navigator.serviceWorker.register('./sw.js').catch(function(){})})}</script>
+</body></html>
